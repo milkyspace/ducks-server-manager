@@ -16,7 +16,7 @@ class VpnusersApiController extends \App\Http\Controllers\Controller
     {
         $servers = Server::all()->where('active', 1);
         foreach ($servers as $server) {
-            $serverAddress = "https://{$server->ip}/";
+            $serverAddress = "http://{$server->ip}/";
             $tunnelServerAddress = null;
             $username = $server->login;
             $password = $server->password;
@@ -44,6 +44,9 @@ class VpnusersApiController extends \App\Http\Controllers\Controller
 
     public function store(Request $request)
     {
+        return response()->json([
+            'data' => $request->toArray()
+        ], 200);
         $request->validate([
             'name' => 'required',
             'tg_id' => 'required|unique:vpnusers|max:255',
@@ -78,7 +81,7 @@ class VpnusersApiController extends \App\Http\Controllers\Controller
 
         return response()->json([
             'data' => new VpnuserResource($vpnuser)
-        ], 201);
+        ], 200);
     }
 
     public function update(Request $request, Vpnuser $vpnuser)
@@ -136,17 +139,35 @@ class VpnusersApiController extends \App\Http\Controllers\Controller
             'email' => $tgId,
         ];
 
-        $link = $xui->createUrl($where, null, 'futurevpn.duckdns.org');
-        if ($link["success"]) {
-            $link = $link["obj"]["url"];
-        } else {
-            $link = "";
+        $link = "";
+        $qrCode = "";
+        $response = $xui->fetch($where);
+        try {
+            if (!$response["success"]) {
+                return response()->json([
+                ], 404);
+            }
+
+            $link = $response["obj"]["user"]["url"];
+            $qrCode = [
+                "html" => $response["obj"]["user"]["qrcode"]["html"],
+                "svg" => $response["obj"]["user"]["qrcode"]["svg"]
+            ];
+
+            if (empty($link)) {
+                return response()->json([
+                ], 404);
+            }
+        } catch (\Throwable $th) {
+            return response()->json([
+            ], 404);
         }
 
         return response()->json([
             'data' => [
-                'link' => $link["obj"]["url"],
-            ]
+                'link' => $link,
+                'qr_code' => $qrCode,
+            ],
         ], 200);
     }
 }
