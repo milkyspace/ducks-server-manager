@@ -8,7 +8,7 @@ use App\Models\Server;
 use App\Models\Vpnuser;
 use Illuminate\Http\Request;
 
-class VpnusersApiController extends \App\Http\Controllers\Controller
+class ServersApiController extends \App\Http\Controllers\Controller
 {
     private array $xui = [];
 
