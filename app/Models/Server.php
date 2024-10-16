@@ -16,6 +16,7 @@ class Server extends Model
         'login',
         'password',
         'active',
+        'type',
     ];
 
     /**

@@ -1,6 +1,7 @@
 function install() {
     apt-get install sudo
 
+    sudo apt-get install vim -y
     sudo apt-get install php -y
     sudo apt install php-xml -y
     sudo apt install php-dom -y

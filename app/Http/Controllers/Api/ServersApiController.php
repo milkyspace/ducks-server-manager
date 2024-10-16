@@ -7,10 +7,12 @@ use App\Http\Resources\VpnuserResource;
 use App\Models\Server;
 use App\Models\Vpnuser;
 use Illuminate\Http\Request;
+use Curl\Curl;
 
 class ServersApiController extends \App\Http\Controllers\Controller
 {
     private array $xui = [];
+    private array $amnezia = [];
 
     public function __construct()
     {
@@ -22,13 +24,18 @@ class ServersApiController extends \App\Http\Controllers\Controller
             $password = $server->password;
             $panel = 1; # Panel Type x-ui (0) / 3x-ui (1)
 
-            $xui = new XuiConnect($serverAddress, $tunnelServerAddress, $username, $password, $panel);
-            $xui->setDefaultProtocol('vless');
-            $xui->setDefaultHeader('google.com');
-            $xui->setDefaultTransmission('tcp');
-            $xui->setSniffing(true, ['http', 'tls', 'quic']);
+            if ($server->type === 'xui') {
+                $xui = new XuiConnect($serverAddress, $tunnelServerAddress, $username, $password, $panel);
+                $xui->setDefaultProtocol('vless');
+                $xui->setDefaultHeader('google.com');
+                $xui->setDefaultTransmission('tcp');
+                $xui->setSniffing(true, ['http', 'tls', 'quic']);
+                $this->xui[] = $xui;
+            }
 
-            $this->xui[] = $xui;
+            if ($server->type === 'amnezia') {
+                $this->amnezia[] = $server;
+            }
         }
     }
 
@@ -73,6 +80,15 @@ class ServersApiController extends \App\Http\Controllers\Controller
             $xui->update($update, $where);
         }
 
+        foreach ($this->amnezia as $amnezia) {
+            $curl = new Curl();
+            $curl->setHeader('Content-Type', 'application/json');
+            $curl->setHeader('password', $amnezia->password);
+            $curl->post("http://{$amnezia->ip}/client", [
+                'name' => $tgId,
+            ]);
+        }
+
         return response()->json([
             'data' => new VpnuserResource($vpnuser)
         ], 200);
@@ -80,7 +96,7 @@ class ServersApiController extends \App\Http\Controllers\Controller
 
     public function update(Request $request, Vpnuser $vpnuser)
     {
-        $tgId = $vpnuser->tg_id;
+        $tgId = $vpnuser->tg_id ?? $request->input('tg_id');
 
         if (empty($tgId)) {
             return response()->json([
@@ -124,6 +140,25 @@ class ServersApiController extends \App\Http\Controllers\Controller
             $xui->update($update, $where);
         }
 
+        foreach ($this->amnezia as $amnezia) {
+            $curl = new Curl();
+            $curl->setHeader('Content-Type', 'application/json');
+            $curl->setHeader('password', $amnezia->password);
+            $users = $curl->get("http://{$amnezia->ip}/client");
+            foreach ($users as $user) {
+                if ($user->name == $tgId) {
+                    $curl = new Curl();
+                    $curl->setHeader('Content-Type', 'application/json');
+                    $curl->setHeader('password', $amnezia->password);
+                    if ($request->request->get('enable') === '1') {
+                        $curl->post("http://{$amnezia->ip}/client/{$user->id}/enable");
+                    } else if ($request->request->get('enable') === '0') {
+                        $curl->post("http://{$amnezia->ip}/client/{$user->id}/disable");
+                    }
+                }
+            }
+        }
+
         return response()->json([
             'data' => new VpnuserResource($vpnuser)
         ], 200);
@@ -141,6 +176,18 @@ class ServersApiController extends \App\Http\Controllers\Controller
 
         $vpnuser->delete();
 
+        foreach ($this->amnezia as $amnezia) {
+            $curl = new Curl();
+            $curl->setHeader('Content-Type', 'application/json');
+            $curl->setHeader('password', $amnezia->password);
+            $users = $curl->get("http://{$amnezia->ip}/client");
+            foreach ($users as $user) {
+                if ($user->name == $vpnuser->tg_id) {
+                    $curl->delete("http://{$amnezia->ip}/client/$user->id");
+                }
+            }
+        }
+
         return response()->json(null, 204);
     }
 
@@ -154,7 +201,7 @@ class ServersApiController extends \App\Http\Controllers\Controller
 
         $link = "";
         $qrCode = "";
-        $response = $xui->fetch($where, "ducks.tel");
+        $response = $xui->fetch($where, env('VPN_DOMAIN_FOR_LINKS'));
         try {
             if (!$response["success"]) {
                 return response()->json([
@@ -182,5 +229,40 @@ class ServersApiController extends \App\Http\Controllers\Controller
                 'qr_code' => $qrCode,
             ],
         ], 200);
+    }
+
+    public function getAmneziaFile(Request $request, string $tgId)
+    {
+        $amnezia = $this->amnezia[0];
+        if (empty($amnezia)) {
+            return response()->json([
+            ], 404);
+        }
+
+        $curl = new Curl();
+        $curl->setHeader('Content-Type', 'application/json');
+        $curl->setHeader('password', $amnezia->password);
+        $users = $curl->get("http://{$amnezia->ip}/client");
+
+        foreach ($users as $user) {
+            if ($user->name == $tgId) {
+                $curl = new Curl();
+                $curl->setHeader('Content-Type', 'application/json');
+                $curl->setHeader('password', $amnezia->password);
+                $config = $curl->get("http://{$amnezia->ip}/client/{$user->id}/configuration");
+                if (empty($config)) {
+                    return response()->json([
+                    ], 404);
+                }
+
+                return response()->make($config, '200', array(
+                    'Content-Type' => 'application/octet-stream',
+                    'Content-Disposition' => "attachment; filename='{$tgId}.config'"
+                ));
+            }
+        }
+
+        return response()->json([
+        ], 404);
     }
 }

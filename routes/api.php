@@ -12,3 +12,4 @@ Route::post('/auth/login', [\App\Http\Controllers\Api\AuthController::class, 'lo
 
 Route::apiResource('vpnservers', ServersApiController::class)->middleware('auth:sanctum');
 Route::get('/vpnservers/{tg_id}/getLink', [ServersApiController::class, 'getLink'])->middleware('auth:sanctum');
+Route::get('/vpnservers/{tg_id}/getAmneziaFile', [ServersApiController::class, 'getAmneziaFile'])->middleware('auth:sanctum');

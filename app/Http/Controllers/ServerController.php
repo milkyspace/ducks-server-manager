@@ -38,6 +38,7 @@ class ServerController extends Controller
             'api_path' => 'max:255',
             'login' => 'required|string|max:255',
             'password' => 'required|string|max:255',
+            'type' => 'required|string|max:255',
         ]);
 
         Server::create([
@@ -46,6 +47,7 @@ class ServerController extends Controller
             'api_path' => $request->api_path,
             'login' => $request->login,
             'password' => $request->password,
+            'type' => $request->type,
             'active' => true,
         ]);
 
@@ -79,12 +81,14 @@ class ServerController extends Controller
             'api_path' => 'max:255',
             'login' => 'required|string|max:255',
             'password' => 'required|string|max:255',
+            'type' => 'required|string|max:255',
         ]);
 
         $server->name = $request->name;
         $server->ip = $request->ip;
         $server->api_path = $request->api_path;
         $server->login = $request->login;
+        $server->type = $request->type;
         $server->password = $request->password;
         $server->active = $request->active ? true : false;
         $server->save();

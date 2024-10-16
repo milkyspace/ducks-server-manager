@@ -35,17 +35,6 @@
                         </div>
                         <div class="mb-6">
                             <label class="block">
-                                <span class="text-gray-700">Api Path</span>
-                                <input type="text" name="api_path"
-                                       class="block w-full mt-1 rounded-md"
-                                       placeholder="" />
-                            </label>
-                            @error('api_path')
-                            <div class="text-sm text-red-600">{{ $message }}</div>
-                            @enderror
-                        </div>
-                        <div class="mb-6">
-                            <label class="block">
                                 <span class="text-gray-700">Login</span>
                                 <input type="text" name="login"
                                        class="block w-full mt-1 rounded-md"
@@ -63,6 +52,17 @@
                                        placeholder="" />
                             </label>
                             @error('password')
+                            <div class="text-sm text-red-600">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <div class="mb-6">
+                            <label class="block">
+                                <span class="text-gray-700">Type</span>
+                                <input type="text" name="type"
+                                       class="block w-full mt-1 rounded-md"
+                                       placeholder="" />
+                            </label>
+                            @error('type')
                             <div class="text-sm text-red-600">{{ $message }}</div>
                             @enderror
                         </div>

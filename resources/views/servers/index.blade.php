@@ -37,7 +37,7 @@
                                     IP
                                 </th>
                                 <th scope="col" class="px-6 py-3">
-                                    Api path
+                                    Type
                                 </th>
                                 <th scope="col" class="px-6 py-3">
                                     Active
@@ -64,7 +64,7 @@
                                         {{ $server->ip }}
                                     </td>
                                     <td class="px-6 py-4">
-                                        {{ $server->api_path }}
+                                        {{ $server->type }}
                                     </td>
                                     <td class="px-6 py-4">
                                         {{ $server->active }}
