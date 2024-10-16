@@ -634,6 +634,7 @@ class XuiConnect
      * @throws Exception
      */
     public function add(
+        string $id = null,
         string $email = null,
         float  $total = 0,
         int    $expiryDays = 0,
@@ -642,7 +643,7 @@ class XuiConnect
         string $xuiRemark = null
     ): array
     {
-        $uuid = xuiTools::randUUID();
+        $uuid = $id ?: xuiTools::randUUID();
         $email = $email ?: xuiTools::randStr(8);
         $password = xuiTools::randStr();
         $xuiPort = $this->randPort();
@@ -784,7 +785,7 @@ class XuiConnect
                     '%LIMIT_IP%' => $limitIp,
                     '%TOTAL%' => $total,
                     '"%EXPIRY_TIME%"' => $expiryTime,
-                    '%ENABLE%' => $enable,
+                    "%ENABLE%" => $enable,
                 ];
                 $config = $this->xuiConfig($protocol, $transmission, $replaces);
 
@@ -797,9 +798,12 @@ class XuiConnect
                                 $this->request("{$this->settings['ROOT']}/inbound/$inboundId/resetClientTraffic/$email", []);
                             }
 
+                            $settings = json_encode($config['settings']);
+                            $settings = str_replace(['"enable":"1"', '"enable":"0"',], ['"enable":true', '"enable":false'], $settings);
+
                             $updateParam = [
                                 'id' => $inboundId,
-                                'settings' => json_encode($config['settings'])
+                                'settings' => $settings,
                             ];
                             $updateResult =
                                 $this->request("{$this->settings['ROOT']}/inbound/updateClient/$uuid", $updateParam);
@@ -937,9 +941,9 @@ class XuiConnect
      * @param array $where
      * @return array
      */
-    public function fetch(array $where): array
+    public function fetch(array $where, $domainLink = ""): array
     {
-        $createUrl = $this->createURL($where);
+        $createUrl = $this->createURL($where, null, $domainLink);
 
         if ($createUrl['success']) {
             $url = $createUrl['obj']['url'];

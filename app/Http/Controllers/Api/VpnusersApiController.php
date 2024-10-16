@@ -44,31 +44,25 @@ class VpnusersApiController extends \App\Http\Controllers\Controller
 
     public function store(Request $request)
     {
-        return response()->json([
-            'data' => $request->toArray()
-        ], 200);
         $request->validate([
             'name' => 'required',
-            'tg_id' => 'required|unique:vpnusers|max:255',
+            'tg_id' => 'required|max:255',
         ]);
 
         $name = $request->input('name');
         $tgId = $request->input('tg_id');
+        $limitIp = $request->input('limit_ip', 0);
 
-        $limitIp = $request->input('limit_ip', 3);
-        $daysToAdd = $request->input('days_to_add', 7);
-
-        $vpnuser = Vpnuser::create([
+        $vpnuser = Vpnuser::updateOrCreate([
             'name' => $name,
             'tg_id' => $tgId,
         ]);
 
         /** @var \App\Http\Controllers\Xui\XuiConnect $xui */
         foreach ($this->xui as $xui) {
-            $expiryDays = $daysToAdd; # Days / Unlimited (0)
             $protocol = 'vless'; # vmess / vless / trojan
             $transmission = 'tcp'; # tcp / ws
-            $xui->add($tgId, 0, $expiryDays, $protocol, $transmission);
+            $xui->add($tgId, $tgId, 0, 0, $protocol, $transmission);
 
             $update = [
                 'limitIp' => $limitIp, # Just for 3x-ui (1)
@@ -86,25 +80,44 @@ class VpnusersApiController extends \App\Http\Controllers\Controller
 
     public function update(Request $request, Vpnuser $vpnuser)
     {
-        $name = $request->input('name');
-        $tgId = $request->input('tg_id');
+        $tgId = $vpnuser->tg_id;
 
-        $limitIp = $request->input('limit_ip');
-        $expiryTime = $request->input('expiry_time');
+        if (empty($tgId)) {
+            return response()->json([
+            ], 404);
+        }
 
-        $vpnuser->update([
-            'name' => $name,
-            'tg_id' => $tgId,
-        ]);
+        $update = [];
+
+        if ($request->request->get('name')) {
+            $update['name'] = $request->request->get('name');
+        }
+
+        $vpnuser->update($update);
+
+        $update = [];
+        if ($request->request->get('limit_ip')) {
+            $update['limitIp'] = $request->request->get('limit_ip');
+        }
+        if ($request->request->get('expiry_time')
+            || $request->request->get('expiry_time') === '0') {
+            $time = $request->request->get('expiry_time');
+            if ($time === 'now') {
+                $time = time();
+            }
+            $update['expiryTime'] = $time;
+        }
+        if ($request->request->get('enable') === '0') {
+            $update['enable'] = false;
+        }
+        if ($request->request->get('enable') === '1') {
+            $update['enable'] = true;
+        }
+
+        $update['reset'] = 0;
 
         /** @var \App\Http\Controllers\Xui\XuiConnect $xui */
         foreach ($this->xui as $xui) {
-            $update = [
-                'expiryTime' => $expiryTime, # time() + (60 * 60 * 24) * (10 /* Days */)
-                'resetUsage' => true, # true/false,
-                'limitIp' => $limitIp, # Just for 3x-ui (1)
-                'enable' => true, # true/false
-            ];
             $where = [
                 'email' => $tgId,
             ];
@@ -141,7 +154,7 @@ class VpnusersApiController extends \App\Http\Controllers\Controller
 
         $link = "";
         $qrCode = "";
-        $response = $xui->fetch($where);
+        $response = $xui->fetch($where, "ducks.tel");
         try {
             if (!$response["success"]) {
                 return response()->json([

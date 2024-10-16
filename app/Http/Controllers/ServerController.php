@@ -101,6 +101,4 @@ class ServerController extends Controller
 
         return redirect()->route('servers.index')->with('status', 'Server Delete Successfully');
     }
-
-
 }
