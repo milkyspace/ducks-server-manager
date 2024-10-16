@@ -2,11 +2,6 @@
 
 namespace App\Http\Controllers\Xui;
 
-/*\
- * | - Version : XuiConnect v3
- * | - Author : github.com/mobinjavari
-\*/
-
 class XuiConnect
 {
     /**
