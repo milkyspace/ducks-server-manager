@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Xui;
+namespace App\Http\Controllers\Inner\Xui;
 
 class XuiConnect
 {
