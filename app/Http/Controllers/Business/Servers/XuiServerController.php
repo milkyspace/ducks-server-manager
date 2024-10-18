@@ -32,8 +32,11 @@ class XuiServerController
     public function addUser(User $user): void
     {
         /** @var Server $server */
-        $this->xuiConnect->add($user->getId(), $user->getId(), 0, 0, $this->server->getDefaultProtocol(), $this->server->getDefaultTransmission());
-        $this->updateUser($user);
+        $response = $this->xuiConnect->fetch(['email' => $user->getId(),]);
+        if ($response['success'] !== true) {
+            $this->xuiConnect->add($user->getId(), $user->getId(), 0, 0, $this->server->getDefaultProtocol(), $this->server->getDefaultTransmission());
+            $this->updateUser($user);
+        }
     }
 
     public function updateUser(User $user): void

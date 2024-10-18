@@ -195,6 +195,7 @@ class XuiConnect
             $httpCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
             curl_close($curl);
 
+            if (empty($response)) $this->deleteCookie();
             if ($httpCode != 200) $this->deleteCookie();
 
             return match ($httpCode) {

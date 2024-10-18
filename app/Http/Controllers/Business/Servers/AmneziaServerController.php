@@ -34,7 +34,10 @@ class AmneziaServerController
 
     public function addUser(User $user): void
     {
-        $this->amneziaConnect->post("http://{$this->server->getAddress()}/client", ['name' => $user->getId(),]);
+        $amneziaUserId = $this->getAmneziaUserId($user);
+        if (empty($amneziaUserId)) {
+            $this->amneziaConnect->post("http://{$this->server->getAddress()}/client", ['name' => $user->getId(),]);
+        }
     }
 
     public function updateUser(User $user): void
