@@ -217,6 +217,9 @@ class XuiConnect
         $check = fsockopen($hostname, $port, $errCode, $errMessage, 5);
 
         if ($check) {
+            if (file_exists($this->cookies['FILE']))
+                return xuiTools::httpStatus(200, 'Cookies are already set');
+
             $login = $this->sendRequest('login', [
                 'username' => $this->username,
                 'password' => $this->password,
@@ -669,7 +672,6 @@ class XuiConnect
             switch ($this->settings['TYPE']) {
                 case 1:
                     $inbound = $this->getInbound($protocol, $transmission);
-
                     if ($inbound['success']) {
                         $inbound = $inbound['obj'];
                         $newUser = [
@@ -1110,7 +1112,7 @@ class xuiTools
         $build .= (isset($data['port']) ? ":{$data['port']}" : '');
         $build .= (isset($data['path']) ? "{$data['path']}" : '');
         $build .= (isset($data['query']) ? "?{$data['query']}" : '');
-        $build .= (isset($data['fragment']) ? "#{$data['fragment']}" : '');
+//        $build .= (isset($data['fragment']) ? "#{$data['fragment']}" : '');
 
         return $build;
     }

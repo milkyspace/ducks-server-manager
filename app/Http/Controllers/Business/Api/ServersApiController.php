@@ -9,6 +9,7 @@ use App\Http\Controllers\Business\Servers\XuiServerController;
 use App\Models\Server;
 use App\Models\Vpnuser;
 use Illuminate\Http\Request;
+use function Symfony\Component\String\u;
 
 class ServersApiController extends \App\Http\Controllers\Controller
 {
@@ -60,14 +61,8 @@ class ServersApiController extends \App\Http\Controllers\Controller
         return response()->json();
     }
 
-    public function update(Request $request)
+    public function update(Request $request, $id)
     {
-        $request->validate([
-            'id' => 'required|max:255',
-        ]);
-
-        $id = $request->input('id');
-
         if (empty($id)) {
             return response()->json([], 404);
         }
@@ -117,6 +112,7 @@ class ServersApiController extends \App\Http\Controllers\Controller
     public function getLink(Request $request, string $id)
     {
         $user = (new User())->setId($id);
+        $link = '';
         /** @var IServerController $server */
         foreach ($this->servers->all() as $server) {
             $link = $server->getLink($user);

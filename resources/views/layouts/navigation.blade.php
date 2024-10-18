@@ -15,9 +15,6 @@
                     <x-nav-link :href="route('servers.index')" :active="request()->routeIs('servers*')">
                         {{ __('Servers') }}
                     </x-nav-link>
-                    <x-nav-link :href="route('vpnusersweb.index')" :active="request()->routeIs('vpnusers*')">
-                        {{ __('Vpn users') }}
-                    </x-nav-link>
                 </div>
             </div>
 

@@ -19,3 +19,5 @@ yarn-error.log
 /.idea
 /.vscode
 /.zed
+
+/app/Http/Controllers/Inner/Xui/.xuiCookies/*.TXT

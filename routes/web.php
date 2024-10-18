@@ -17,7 +17,6 @@ Route::middleware('auth')->group(function () {
         return redirect('/servers/');
     });
     Route::resource('servers', \App\Http\Controllers\Business\Pages\ServerController::class);
-    Route::resource('vpnusersweb', \App\Http\Controllers\Business\Pages\VpnusersController::class);
 });
 
 require __DIR__ . '/auth.php';

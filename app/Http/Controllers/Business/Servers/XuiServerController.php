@@ -6,10 +6,14 @@ use App\Http\Controllers\Inner\Xui\XuiConnect;
 
 class XuiServerController
 {
+    private Server $server;
+
     private \App\Http\Controllers\Inner\Xui\XuiConnect $xuiConnect;
 
     public function __construct(Server $server)
     {
+        $this->server = $server;
+
         $xui = new XuiConnect(
             "http://{$server->getAddress()}/",
             null,
@@ -28,7 +32,7 @@ class XuiServerController
     public function addUser(User $user): void
     {
         /** @var Server $server */
-        $this->xuiConnect->add($user->getId(), $user->getId(), 0, 0, $server->getDefaultProtocol(), $server->getDefaultTransmission());
+        $this->xuiConnect->add($user->getId(), $user->getId(), 0, 0, $this->server->getDefaultProtocol(), $this->server->getDefaultTransmission());
         $this->updateUser($user);
     }
 
@@ -49,8 +53,10 @@ class XuiServerController
 
         if ($user->isEnable() === false) {
             $update['enable'] = false;
+            $update['expiryTime'] = time();
         } elseif ($user->isEnable() === true) {
             $update['enable'] = true;
+            $update['expiryTime'] = 0;
         }
 
         $update['reset'] = 0;
@@ -66,6 +72,9 @@ class XuiServerController
     public function getLink(User $user): ?string
     {
         $response = $this->xuiConnect->fetch(['email' => $user->getId(),], env('VPN_DOMAIN_FOR_LINKS'));
+        if ($response['success'] !== true) {
+            return '';
+        }
         return $response["obj"]["user"]["url"];
     }
 
