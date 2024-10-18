@@ -216,6 +216,7 @@ class XuiConnect
      */
     private function login(): array
     {
+        $this->deleteCookie();
         $hostname = $this->parseAddress['host'] ?? '';
         $port = $this->parseAddress['port'] ?? 443;
         $check = fsockopen($hostname, $port, $errCode, $errMessage, 5);
@@ -246,7 +247,6 @@ class XuiConnect
      */
     private function request(string $method, array $param = []): array
     {
-        $this->deleteCookie();
         if ($this->login['success']) {
             return $this->sendRequest($method, $param);
         }
