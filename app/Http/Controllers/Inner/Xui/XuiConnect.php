@@ -195,7 +195,10 @@ class XuiConnect
             $httpCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
             curl_close($curl);
 
-            if (empty($response)) $this->deleteCookie();
+            if ((empty($response) || $response == "")
+                && !str_contains($this->address, "login")) {
+                $this->deleteCookie();
+            }
             if ($httpCode != 200) $this->deleteCookie();
 
             return match ($httpCode) {
@@ -243,6 +246,7 @@ class XuiConnect
      */
     private function request(string $method, array $param = []): array
     {
+        $this->deleteCookie();
         if ($this->login['success']) {
             return $this->sendRequest($method, $param);
         }
