@@ -1,7 +1,7 @@
 # 🦆 DUCKS SERVER MANAGER (DSM)
 ## _Make managing vpn servers simple_
 
-[![Telegram](https://img.shields.io/badge/Telegram-2CA5E0?style=for-the-badge&logo=telegram&logoColor=white)](https://t.me/vpnducks_support)
+[![License: MIT](https://img.shields.io/badge/License-MIT-lightblue.svg)](https://opensource.org/licenses/MIT)
 
 DSM is an application for managing servers used for VPN.
 dvpn allows you to deliver the same information about users and subscriptions to each of the servers, and collect information about the status of the servers
@@ -23,8 +23,13 @@ git clone https://github.com/milkyspace/ducks-server-manager.git
 cd ducks-server-manager
 chmod u+x install.sh
 ./install.sh
-
 # answer the installation questions if necessary
+
+#If you run any Docker command from a regular user, the following error will be displayed in the terminal:
+#Got permission denied while trying to connect to the Docker daemon socket at unix:///var/run/docker.sock: Get "http://%2Fvar%2Frun%2Fdocker.sock/v1.24/containers/json": dial unix #/var/run/docker.sock: connect: permission denied
+sudo groupadd docker
+sudo usermod -aG docker $USER
+
 ```
 
 Change it .env: Enter your data using the example
