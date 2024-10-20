@@ -26,7 +26,7 @@ chmod u+x install.sh
 # answer the installation questions if necessary
 
 #If you run any Docker command from a regular user, the following error will be displayed in the terminal:
-#Got permission denied while trying to connect to the Docker daemon socket at unix:///var/run/docker.sock: Get "http://%2Fvar%2Frun%2Fdocker.sock/v1.24/containers/json": dial unix #/var/run/docker.sock: connect: permission denied
+#Got permission denied while trying to connect to the Docker daemon socket at unix:///var/run/docker.sock: Get http://%2Fvar%2Frun%2Fdocker.sock/v1.24/containers/json: dial unix /var/run/docker.sock: connect: permission denied
 sudo groupadd docker
 sudo usermod -aG docker $USER
 
