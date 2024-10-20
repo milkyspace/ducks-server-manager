@@ -42,6 +42,11 @@ Change docker-compose.yml:
 - sudo ./vendor/bin/sail down
 - sudo ./vendor/bin/sail up -d
 
+Set permissions:
+- sudo chmod -R 777 ./storage
+- sudo chmod -R 777 ./database
+- sudo chmod -R 777 ./app/Http/Controllers/Inner/Xui
+
 
 **APP_URL** is url of your app (example ip of the server http://192.168.0.1)
 
