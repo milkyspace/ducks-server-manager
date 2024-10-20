@@ -37,6 +37,12 @@ Change it .env: Enter your data using the example
 nano .env # or vim .env
 ```
 
+Change docker-compose.yml:
+- Delete everything related to volume mysql
+- sudo ./vendor/bin/sail down
+- sudo ./vendor/bin/sail up -d
+
+
 **APP_URL** is url of your app (example ip of the server http://192.168.0.1)
 
 Now you can open DSM at http://{$IP}/register to register at DSM
