@@ -16,8 +16,6 @@ And of course DUCKS VPN itself is open source with a public repository on GitHub
 
 ## Installation
 
-DUCKS VPN requires PHP to run.
-
 ```sh
 git clone https://github.com/milkyspace/ducks-server-manager.git
 cd ducks-server-manager
