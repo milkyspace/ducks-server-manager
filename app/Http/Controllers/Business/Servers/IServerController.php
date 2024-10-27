@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Business\Servers;
 
 interface IServerController
 {
-    public function addUser(User $user): void;
+    const TYPE = "";
+
+    public function addUser(User $user, ?array $data = []): void;
 
     public function updateUser(User $user): void;
 

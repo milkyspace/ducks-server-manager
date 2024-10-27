@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Business\Servers;
 
 use App\Http\Controllers\Inner\Xui\XuiConnect;
 
-class XuiServerController
+class XuiServerController implements IServerController
 {
+    const TYPE = 'xui';
+
     private Server $server;
 
     private \App\Http\Controllers\Inner\Xui\XuiConnect $xuiConnect;
@@ -29,7 +31,7 @@ class XuiServerController
         $this->xuiConnect = $xui;
     }
 
-    public function addUser(User $user): void
+    public function addUser(User $user, ?array $data = []): void
     {
         /** @var Server $server */
         $response = $this->xuiConnect->fetch(['email' => $user->getId(),]);

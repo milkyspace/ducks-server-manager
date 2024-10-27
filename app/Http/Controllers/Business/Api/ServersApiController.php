@@ -6,14 +6,15 @@ use App\Http\Controllers\Business\Servers\AmneziaServerController;
 use App\Http\Controllers\Business\Servers\IServerController;
 use App\Http\Controllers\Business\Servers\User;
 use App\Http\Controllers\Business\Servers\XuiServerController;
+use App\Http\Controllers\Controller;
 use App\Models\Server;
 use App\Models\Vpnuser;
 use Illuminate\Http\Request;
-use function Symfony\Component\String\u;
+use Illuminate\Support\Collection;
 
-class ServersApiController extends \App\Http\Controllers\Controller
+class ServersApiController extends Controller
 {
-    private \Illuminate\Support\Collection $servers;
+    private Collection $servers;
 
     public function __construct()
     {
@@ -25,13 +26,11 @@ class ServersApiController extends \App\Http\Controllers\Controller
                 ->setUser($serverData->login)
                 ->setPassword($serverData->password);
 
-            switch ($serverData->type) {
-                case 'xui':
-                    $servers[] = new XuiServerController($server);
-                    break;
-                case 'amnezia':
-                    $servers[] = new AmneziaServerController($server);
-                    break;
+            foreach ([XuiServerController::class, AmneziaServerController::class] as $controller) {
+                /** @var IServerController $controller */
+                if ($controller::TYPE === $serverData->type) {
+                    $servers[] = new $controller($server);
+                }
             }
         }
 
@@ -45,10 +44,14 @@ class ServersApiController extends \App\Http\Controllers\Controller
         ]);
 
         $id = $request->input('id');
+        $name = $request->input('name');
         $limitIp = $request->input('limit_ip', 3);
+        $type = $request->input('type', '');
 
         $user = (new User())
             ->setId($id)
+            ->setType($type)
+            ->setUserName($name)
             ->setEnable(true)
             ->setLimitIp($limitIp)
             ->setExpiryTime(0);

@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Business\Servers;
 
 use Curl\Curl;
 
-class AmneziaServerController
+class AmneziaServerController implements IServerController
 {
+    const TYPE = 'amnezia';
+
     private \Curl\Curl $amneziaConnect;
     private Server $server;
 
@@ -32,8 +34,16 @@ class AmneziaServerController
         return null;
     }
 
-    public function addUser(User $user): void
+    public function addUser(User $user, ?array $data = []): void
     {
+        if (empty($user->getType())) {
+            return;
+        }
+
+        if ($user->getType() !== static::TYPE) {
+            return;
+        }
+
         $amneziaUserId = $this->getAmneziaUserId($user);
         if (empty($amneziaUserId)) {
             $this->amneziaConnect->post("http://{$this->server->getAddress()}/client", ['name' => $user->getId(),]);

@@ -8,6 +8,8 @@ class User
     private ?int $limitIp = null;
     private null|int|string $expiryTime = null;
     private ?bool $enable = null;
+    private ?string $userName = null;
+    private ?string $type = null;
 
     /**
      * @return string
@@ -28,6 +30,24 @@ class User
     }
 
     /**
+     * @return string|null
+     */
+    public function getUserName(): ?string
+    {
+        return $this->userName;
+    }
+
+    /**
+     * @param string|null $userName
+     * @return User
+     */
+    public function setUserName(?string $userName): User
+    {
+        $this->userName = $userName;
+        return $this;
+    }
+
+    /**
      * @return int|null
      */
     public function getLimitIp(): ?int
@@ -42,6 +62,24 @@ class User
     public function setLimitIp(?int $limitIp): User
     {
         $this->limitIp = $limitIp;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getType(): ?string
+    {
+        return $this->type;
+    }
+
+    /**
+     * @param string|null $type
+     * @return User
+     */
+    public function setType(?string $type): User
+    {
+        $this->type = $type;
         return $this;
     }
 
