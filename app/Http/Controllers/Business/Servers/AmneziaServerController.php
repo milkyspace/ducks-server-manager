@@ -36,11 +36,17 @@ class AmneziaServerController implements IServerController
 
     public function addUser(User $user, ?array $data = []): void
     {
+        // Создаем конфиг только тогда, когда сменился протокол на Amnezia
         if (empty($user->getType())) {
             return;
         }
 
+        // Если пользователь уходит с протокола Amnezia, удаляем конфигурацию, чтобы освободить ip
         if ($user->getType() !== static::TYPE) {
+            $amneziaUserId = $this->getAmneziaUserId($user);
+            if (!empty($amneziaUserId)) {
+                $this->amneziaConnect->delete("http://{$this->server->getAddress()}/client/$amneziaUserId");
+            }
             return;
         }
 
