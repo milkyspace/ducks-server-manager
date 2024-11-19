@@ -31,6 +31,23 @@ class XuiServerController implements IServerController
         $this->xuiConnect = $xui;
     }
 
+    /**
+     * @return Server
+     */
+    public function getServer(): Server
+    {
+        return $this->server;
+    }
+
+    /**
+     * @param Server $server
+     */
+    public function setServer(Server $server)
+    {
+        $this->server = $server;
+        return $this;
+    }
+
     public function addUser(User $user, ?array $data = []): void
     {
         /** @var Server $server */
@@ -66,7 +83,19 @@ class XuiServerController implements IServerController
 
         $update['reset'] = 0;
 
-        $this->xuiConnect->update($update, ['email' => $user->getId(),]);
+        try {
+            $this->xuiConnect->update($update, ['email' => $user->getId(),]);
+        } catch (\Throwable $th) {
+            $i = 0;
+            while ($i < 5) {
+                sleep(10);
+                $responseNew = $this->xuiConnect->update($update, ['email' => $user->getId(),]);
+                if ($responseNew['success'] === true) {
+                    break;
+                }
+                $i++;
+            }
+        }
     }
 
     public function destroyUser(User $user): void
@@ -86,5 +115,11 @@ class XuiServerController implements IServerController
     public function getFile(User $user): ?string
     {
         return null;
+    }
+
+    public function getUsersList(): ?array
+    {
+        $response = $this->xuiConnect->fetchAll([]);
+        return $response['clients'] ?: [];
     }
 }

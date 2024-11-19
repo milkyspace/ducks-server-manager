@@ -22,6 +22,23 @@ class AmneziaServerController implements IServerController
         $this->amneziaConnect = $curl;
     }
 
+    /**
+     * @return Server
+     */
+    public function getServer(): Server
+    {
+        return $this->server;
+    }
+
+    /**
+     * @param Server $server
+     */
+    public function setServer(Server $server)
+    {
+        $this->server = $server;
+        return $this;
+    }
+
     private function getAmneziaUserId(User $user): ?string
     {
         $amneziaUsers = $this->amneziaConnect->get("http://{$this->server->getAddress()}/client");
@@ -97,5 +114,10 @@ class AmneziaServerController implements IServerController
 
         $config = $this->amneziaConnect->get("http://{$this->server->getAddress()}/client/{$amneziaUserId}/configuration");
         return $config ?? null;
+    }
+
+    public function getUsersList(): ?array
+    {
+        return [];
     }
 }

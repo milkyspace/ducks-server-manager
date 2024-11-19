@@ -149,4 +149,17 @@ class ServersApiController extends Controller
             'Content-Disposition' => "attachment; filename='{$id}.config'"
         ));
     }
+
+    public function getUsersList(Request $request)
+    {
+        $usersByServers = [];
+        /** @var IServerController $server */
+        foreach ($this->servers->all() as $server) {
+            $usersByServers[$server->getServer()->getAddress()] = $server->getUsersList();
+        }
+
+        return response()->json([
+            'users_by_servers' => $usersByServers,
+        ]);
+    }
 }

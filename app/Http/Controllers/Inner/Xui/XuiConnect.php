@@ -978,6 +978,27 @@ class XuiConnect
 
     /**
      * @param array $where
+     * @return array
+     */
+    public function fetchAll(array $where): array
+    {
+        $list = $this->request("{$this->settings['ROOT']}/inbound/list");
+        $clients = [];
+        if ($list['success']) {
+            $inbounds = $list['obj'] ?: [];
+            foreach ($inbounds as $inbound) {
+                $clients = json_decode($inbound['settings'], true)['clients'] ?? [];
+            }
+        }
+        return [
+            'success' => true,
+            'msg' => 'User found successfully',
+            'clients' => $clients
+        ];
+    }
+
+    /**
+     * @param array $where
      * @param int|null $toDate
      * @return array
      */
