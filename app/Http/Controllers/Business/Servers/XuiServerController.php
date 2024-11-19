@@ -88,7 +88,7 @@ class XuiServerController implements IServerController
         } catch (\Throwable $th) {
             $i = 0;
             while ($i < 5) {
-                sleep(10);
+                sleep(2);
                 $responseNew = $this->xuiConnect->update($update, ['email' => $user->getId(),]);
                 if ($responseNew['success'] === true) {
                     break;
