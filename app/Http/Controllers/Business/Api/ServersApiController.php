@@ -112,13 +112,13 @@ class ServersApiController extends Controller
         return response()->json(null, 204);
     }
 
-    public function getLink(Request $request, string $id)
+    public function getLink(Request $request, string $id, ?string $keyType = 'default')
     {
         $user = (new User())->setId($id);
         $link = '';
         /** @var IServerController $server */
         foreach ($this->servers->all() as $server) {
-            $link = $server->getLink($user);
+            $link = $server->getLink($user, $keyType);
             if (!empty($link)) {
                 break;
             }

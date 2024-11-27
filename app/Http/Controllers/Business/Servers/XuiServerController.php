@@ -103,9 +103,19 @@ class XuiServerController implements IServerController
         $this->xuiConnect->delete(['email' => $user->getId(),]);
     }
 
-    public function getLink(User $user): ?string
+    public function getLink(User $user, ?string $keyType = 'default'): ?string
     {
-        $response = $this->xuiConnect->fetch(['email' => $user->getId(),], env('VPN_DOMAIN_FOR_LINKS'));
+        switch ($keyType) {
+            case 'tiktok':
+                $address = env('VPN_DOMAIN_FOR_LINKS_TIKTOK');
+                break;
+            case 'default':
+            default:
+                $address = env('VPN_DOMAIN_FOR_LINKS');
+                break;
+        }
+
+        $response = $this->xuiConnect->fetch(['email' => $user->getId(),], $address, $keyType);
         if ($response['success'] !== true) {
             return '';
         }

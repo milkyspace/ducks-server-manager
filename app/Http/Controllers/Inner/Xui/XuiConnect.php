@@ -873,7 +873,7 @@ class XuiConnect
      * @param string|null $customRemark
      * @return array
      */
-    public function createUrl(array $where, string $customRemark = null, string $domainLink = ''): array
+    public function createUrl(array $where, string $customRemark = null, string $domainLink = '', string $keyType = ''): array
     {
         $address = !empty($domainLink) ? $domainLink : parse_url($this->serverAddress)['host'] ?? $this->serverAddress;
         $user = $this->list($where);
@@ -895,6 +895,7 @@ class XuiConnect
                 '%ADDRESS%' => $address,
                 '%PORT%' => $port,
                 '%TRANSMISSION%' => $transmission,
+                '%KEY_TYPE%' => $keyType ?: '',
             ];
             $config = $this->xuiConfig($protocol, $transmission, $replaces);
 
@@ -943,9 +944,9 @@ class XuiConnect
      * @param array $where
      * @return array
      */
-    public function fetch(array $where, $domainLink = ""): array
+    public function fetch(array $where, $domainLink = '', $keyType = ''): array
     {
-        $createUrl = $this->createURL($where, null, $domainLink);
+        $createUrl = $this->createURL($where, null, $domainLink, strtoupper($keyType));
 
         if ($createUrl['success']) {
             $url = $createUrl['obj']['url'];

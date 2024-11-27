@@ -61,7 +61,7 @@
                 "host": "%ADDRESS%",
                 "port": "%PORT%",
                 "user": "%USER%",
-                "query": "type=%TRANSMISSION%&security=reality&pbk=IarU4xicX8qiVO5nqzeHc6MK9A_Vw9YaAtnPHB4DswU&fp=chrome&sni=google.com&sid=409c9524370c&spx=%2F&flow=xtls-rprx-vision#vless-%EMAIL%",
+                "query": "type=%TRANSMISSION%&security=reality&pbk=IarU4xicX8qiVO5nqzeHc6MK9A_Vw9YaAtnPHB4DswU&fp=chrome&sni=google.com&sid=409c9524370c&spx=%2F&flow=xtls-rprx-vision#%KEY_TYPE%VPNDUCKS",
                 "fragment": "%REMARK%"
             }
         },
@@ -201,7 +201,7 @@
                 "host": "%ADDRESS%",
                 "port": "%PORT%",
                 "user": "%USER%",
-                "query": "type=%TRANSMISSION%&security=reality&pbk=IarU4xicX8qiVO5nqzeHc6MK9A_Vw9YaAtnPHB4DswU&fp=chrome&sni=google.com&sid=409c9524370c&spx=%2F&flow=xtls-rprx-vision#vless-%EMAIL%",
+                "query": "type=%TRANSMISSION%&security=reality&pbk=IarU4xicX8qiVO5nqzeHc6MK9A_Vw9YaAtnPHB4DswU&fp=chrome&sni=google.com&sid=409c9524370c&spx=%2F&flow=xtls-rprx-vision#%KEY_TYPE%VPNDUCKS",
                 "fragment": "%EMAIL%"
             }
         },

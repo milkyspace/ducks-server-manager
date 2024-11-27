@@ -15,7 +15,7 @@ Route::post('vpnservers', [ServersApiController::class, 'store'])->name('vpnserv
 Route::put('vpnservers/{userId}', [ServersApiController::class, 'update'])->name('vpnservers.update')->middleware('auth:sanctum');
 Route::delete('vpnservers/{userId}', [ServersApiController::class, 'destroy'])->name('vpnservers.destroy')->middleware('auth:sanctum');
 
-Route::get('/vpnservers/{tg_id}/getLink', [ServersApiController::class, 'getLink'])->middleware('auth:sanctum');
+Route::get('/vpnservers/{tg_id}/getLink/{key_type}', [ServersApiController::class, 'getLink'])->middleware('auth:sanctum');
 Route::get('/vpnservers/{tg_id}/getAmneziaFile', [ServersApiController::class, 'getFile'])->middleware('auth:sanctum');
 Route::get('/vpnservers/getUsersList', [ServersApiController::class, 'getUsersList'])->middleware('auth:sanctum');
 

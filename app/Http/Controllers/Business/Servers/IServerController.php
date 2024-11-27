@@ -16,7 +16,7 @@ interface IServerController
 
     public function destroyUser(User $user): void;
 
-    public function getLink(User $user): ?string;
+    public function getLink(User $user, ?string $keyType = 'default'): ?string;
 
     public function getFile(User $user): ?string;
 

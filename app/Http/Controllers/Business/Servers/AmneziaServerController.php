@@ -100,7 +100,7 @@ class AmneziaServerController implements IServerController
         $this->amneziaConnect->delete("http://{$this->server->getAddress()}/client/$amneziaUserId");
     }
 
-    public function getLink(User $user): ?string
+    public function getLink(User $user, ?string $keyType = 'default'): ?string
     {
         return null;
     }
