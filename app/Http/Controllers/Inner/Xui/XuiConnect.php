@@ -946,7 +946,7 @@ class XuiConnect
      */
     public function fetch(array $where, $domainLink = '', $keyType = ''): array
     {
-        $createUrl = $this->createURL($where, null, $domainLink, strtoupper($keyType));
+        $createUrl = $this->createURL($where, null, $domainLink, !empty($keyType) ? (strtoupper($keyType) . '_') : '');
 
         if ($createUrl['success']) {
             $url = $createUrl['obj']['url'];
