@@ -51,11 +51,11 @@ class AmneziaServerController implements IServerController
         return null;
     }
 
-    public function addUser(User $user, ?array $data = []): void
+    public function addUser(User $user, ?array $data = []): bool
     {
         // Создаем конфиг только тогда, когда сменился протокол на Amnezia
         if (empty($user->getType())) {
-            return;
+            return false;
         }
 
         // Если пользователь уходит с протокола Amnezia, удаляем конфигурацию, чтобы освободить ip
@@ -64,23 +64,25 @@ class AmneziaServerController implements IServerController
             if (!empty($amneziaUserId)) {
                 $this->amneziaConnect->delete("http://{$this->server->getAddress()}/client/$amneziaUserId");
             }
-            return;
+            return false;
         }
 
         $amneziaUserId = $this->getAmneziaUserId($user);
         if (empty($amneziaUserId)) {
             $this->amneziaConnect->post("http://{$this->server->getAddress()}/client", ['name' => $user->getId(),]);
         }
+
+        return true;
     }
 
-    public function updateUser(User $user): void
+    public function updateUser(User $user): bool
     {
         $amneziaUserId = $this->getAmneziaUserId($user);
         if (empty($amneziaUserId)) {
             if ($user->isEnable() === true) {
                 $this->addUser($user);
             }
-            return;
+            return true;
         }
 
         if ($user->isEnable() === true) {
@@ -88,6 +90,7 @@ class AmneziaServerController implements IServerController
         } else if ($user->isEnable() === false) {
             $this->amneziaConnect->post("http://{$this->server->getAddress()}/client/{$amneziaUserId}/disable");
         }
+        return true;
     }
 
     public function destroyUser(User $user): void

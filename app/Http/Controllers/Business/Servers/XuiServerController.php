@@ -48,17 +48,21 @@ class XuiServerController implements IServerController
         return $this;
     }
 
-    public function addUser(User $user, ?array $data = []): void
+    public function addUser(User $user, ?array $data = []): bool
     {
         /** @var Server $server */
         $response = $this->xuiConnect->fetch(['email' => $user->getId(),]);
         if ($response['success'] !== true) {
-            $this->xuiConnect->add($user->getId(), $user->getId(), 0, 0, $this->server->getDefaultProtocol(), $this->server->getDefaultTransmission());
-            $this->updateUser($user);
+            $isAdded = $this->xuiConnect->add($user->getId(), $user->getId(), 0, 0, $this->server->getDefaultProtocol(), $this->server->getDefaultTransmission());
+            if ($isAdded['success'] === true && $this->updateUser($user)) {
+                return true;
+            }
         }
+
+        return false;
     }
 
-    public function updateUser(User $user): void
+    public function updateUser(User $user): bool
     {
         $update = [];
         if (!empty($user->getLimitIp()) || $user->getLimitIp() === 0) {
@@ -84,18 +88,14 @@ class XuiServerController implements IServerController
         $update['reset'] = 0;
 
         try {
-            $this->xuiConnect->update($update, ['email' => $user->getId(),]);
-        } catch (\Throwable $th) {
-            $i = 0;
-            while ($i < 5) {
-                sleep(2);
-                $responseNew = $this->xuiConnect->update($update, ['email' => $user->getId(),]);
-                if ($responseNew['success'] === true) {
-                    break;
-                }
-                $i++;
+            $isUpdate = $this->xuiConnect->update($update, ['email' => $user->getId(),]);
+            if ($isUpdate['success'] === true) {
+                return true;
             }
+        } catch (\Throwable $th) {
+            return false;
         }
+        return false;
     }
 
     public function destroyUser(User $user): void

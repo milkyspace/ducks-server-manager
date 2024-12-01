@@ -10,9 +10,9 @@ interface IServerController
 
     public function setServer(Server $server);
 
-    public function addUser(User $user, ?array $data = []): void;
+    public function addUser(User $user, ?array $data = []): bool;
 
-    public function updateUser(User $user): void;
+    public function updateUser(User $user): bool;
 
     public function destroyUser(User $user): void;
 
