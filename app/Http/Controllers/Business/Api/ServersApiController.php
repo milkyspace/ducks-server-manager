@@ -8,6 +8,7 @@ use App\Http\Controllers\Business\Servers\User;
 use App\Http\Controllers\Business\Servers\XuiServerController;
 use App\Http\Controllers\Controller;
 use App\Jobs\ProcessAddingUser;
+use App\Jobs\ProcessUpdatingUser;
 use App\Models\Server;
 use App\Models\Vpnuser;
 use Illuminate\Http\Request;
@@ -98,6 +99,7 @@ class ServersApiController extends Controller
         /** @var IServerController $server */
         foreach ($this->servers->all() as $server) {
             $server->updateUser($user);
+            ProcessUpdatingUser::dispatch($server, $user);
         }
 
         return response()->json();
