@@ -115,6 +115,7 @@ class XuiServerController implements IServerController
                 break;
         }
 
+        $keyType = str_replace(['iPhone', 'Android', 'Windows', 'MacOS[;'], '', $keyType);
         $response = $this->xuiConnect->fetch(['email' => $user->getId(),], $address, $keyType);
         if ($response['success'] !== true) {
             return '';
