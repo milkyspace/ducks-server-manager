@@ -2,8 +2,11 @@
 
 namespace App\Jobs;
 
+use App\Http\Controllers\Business\Pages\ServerController;
+use App\Http\Controllers\Business\Servers\AmneziaServerController;
 use App\Http\Controllers\Business\Servers\IServerController;
 use App\Http\Controllers\Business\Servers\User;
+use App\Http\Controllers\Business\Servers\XuiServerController;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 
@@ -18,7 +21,7 @@ class ProcessUpdatingUser implements ShouldQueue
     /**
      * Create a new job instance.
      */
-    public function __construct(private IServerController $server, private User $user)
+    public function __construct(private \App\Http\Controllers\Business\Servers\Server $server, private User $user)
     {
     }
 
@@ -28,13 +31,19 @@ class ProcessUpdatingUser implements ShouldQueue
     public function handle(): void
     {
         try {
-            $isUpdate = $this->server->updateUser($this->user);
-            if ($isUpdate !== true) {
-                $this->fail('Не обновился пользователь ' . $this->user->getUserName() . '(' . $this->user->getId() . ') на сервере ' . $this->server->getServer()->getAddress());
-                $this->release(10);
+            foreach ([XuiServerController::class, AmneziaServerController::class] as $controller) {
+                /** @var IServerController $controller */
+                if ($controller::TYPE === $this->server->getType()) {
+                    $server = new $controller($this->server);
+                    $isUpdate = $server->updateUser($this->user);
+                    if ($isUpdate['success'] !== true) {
+                        $this->fail('Не обновился пользователь ' . $this->user->getUserName() . '(' . $this->user->getId() . ') на сервере ' . $server->getServer()->getAddress() . json_encode($isUpdate));
+                        $this->release(10);
+                    }
+                }
             }
         } catch (\Exception $e) {
-            $this->fail('Exception Не обновился пользователь ' . $this->user->getUserName() . '(' . $this->user->getId() . ') на сервере ' . $this->server->getServer()->getAddress());
+            $this->fail('Exception Не обновился пользователь ' . $this->user->getUserName() . '(' . $this->user->getId() . ' ' . $e->getMessage());
             $this->release(10);
         }
     }

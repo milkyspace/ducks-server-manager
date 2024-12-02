@@ -75,14 +75,14 @@ class AmneziaServerController implements IServerController
         return true;
     }
 
-    public function updateUser(User $user): bool
+    public function updateUser(User $user): array
     {
         $amneziaUserId = $this->getAmneziaUserId($user);
         if (empty($amneziaUserId)) {
             if ($user->isEnable() === true) {
                 $this->addUser($user);
             }
-            return true;
+            return [];
         }
 
         if ($user->isEnable() === true) {
@@ -90,7 +90,7 @@ class AmneziaServerController implements IServerController
         } else if ($user->isEnable() === false) {
             $this->amneziaConnect->post("http://{$this->server->getAddress()}/client/{$amneziaUserId}/disable");
         }
-        return true;
+        return [];
     }
 
     public function destroyUser(User $user): void

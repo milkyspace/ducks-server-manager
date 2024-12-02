@@ -65,7 +65,7 @@ class XuiServerController implements IServerController
         return true;
     }
 
-    public function updateUser(User $user): bool
+    public function updateUser(User $user): array
     {
         $update = [];
         if (!empty($user->getLimitIp()) || $user->getLimitIp() === 0) {
@@ -93,12 +93,19 @@ class XuiServerController implements IServerController
         try {
             $isUpdate = $this->xuiConnect->update($update, ['email' => $user->getId(),]);
             if ($isUpdate['success'] === true) {
-                return true;
+                return [
+                    'success' => true,
+                ];
             }
         } catch (\Throwable $th) {
-            return false;
+            return [
+                'success' => true,
+                'error' => $th->getMessage(),
+            ];
         }
-        return false;
+        return [
+            'success' => false,
+        ];
     }
 
     public function destroyUser(User $user): void

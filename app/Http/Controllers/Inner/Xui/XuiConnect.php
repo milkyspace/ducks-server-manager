@@ -94,6 +94,10 @@ class XuiConnect
             ]
         ];
         /* Cookies */
+        if (empty($_SERVER['HTTP_HOST'])) {
+            $_SERVER['HTTP_HOST'] = env('APP_URL');
+        }
+
         $cookieFileName = md5($this->address . $username . $password . $_SERVER['HTTP_HOST']);
         $cookiesDirPath = __DIR__ . '/.xuiCookies';
         $this->cookies = [

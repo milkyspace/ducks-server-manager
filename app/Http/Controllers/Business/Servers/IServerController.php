@@ -12,7 +12,7 @@ interface IServerController
 
     public function addUser(User $user, ?array $data = []): bool;
 
-    public function updateUser(User $user): bool;
+    public function updateUser(User $user): array;
 
     public function destroyUser(User $user): void;
 

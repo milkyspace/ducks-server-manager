@@ -7,12 +7,30 @@ class Server
     private string $address;
     private string $user;
     private string $password;
+    private string $type;
     private string $defaultProtocol = 'vless';
     private string $defaultHeader = 'google.com';
     private string $defaultTransmission = 'tcp';
     private bool $isSniffingSwitchOn = true;
     private array $sniffingProtocols = ['http', 'tls', 'quic'];
 
+    /**
+     * @return string
+     */
+    public function getType(): string
+    {
+        return $this->type;
+    }
+
+    /**
+     * @param string $type
+     * @return Server
+     */
+    public function setType(string $type): Server
+    {
+        $this->type = $type;
+        return $this;
+    }
     /**
      * @return string
      */

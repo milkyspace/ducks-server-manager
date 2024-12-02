@@ -2,8 +2,10 @@
 
 namespace App\Jobs;
 
+use App\Http\Controllers\Business\Servers\AmneziaServerController;
 use App\Http\Controllers\Business\Servers\IServerController;
 use App\Http\Controllers\Business\Servers\User;
+use App\Http\Controllers\Business\Servers\XuiServerController;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 
@@ -18,7 +20,7 @@ class ProcessAddingUser implements ShouldQueue
     /**
      * Create a new job instance.
      */
-    public function __construct(private IServerController $server, private User $user)
+    public function __construct(private \App\Http\Controllers\Business\Servers\Server $server, private User $user)
     {
     }
 
@@ -28,13 +30,19 @@ class ProcessAddingUser implements ShouldQueue
     public function handle(): void
     {
         try {
-            $isAdded = $this->server->addUser($this->user);
-            if ($isAdded !== true) {
-                $this->fail('Не добавился пользователь ' . $this->user->getUserName() . '(' . $this->user->getId() . ') на сервере ' . $this->server->getServer()->getAddress());
-                $this->release(10);
+            foreach ([XuiServerController::class, AmneziaServerController::class] as $controller) {
+                /** @var IServerController $controller */
+                if ($controller::TYPE === $this->server->getType()) {
+                    $server = new $controller($this->server);
+                    $isAdded = $server->addUser($this->user);
+                    if ($isAdded !== true) {
+                        $this->fail('Не добавился пользователь ' . $this->user->getUserName() . '(' . $this->user->getId() . ') на сервере ' . $server->getServer()->getAddress());
+                        $this->release(10);
+                    }
+                }
             }
         } catch (\Exception $e) {
-            $this->fail('Exception Не добавился пользователь ' . $this->user->getUserName() . '(' . $this->user->getId() . ') на сервере ' . $this->server->getServer()->getAddress());
+            $this->fail('Exception Не добавился пользователь ' . $this->user->getUserName() . '(' . $this->user->getId() . ' ' . $e->getMessage());
             $this->release(10);
         }
     }

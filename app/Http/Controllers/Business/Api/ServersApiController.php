@@ -17,16 +17,20 @@ use Illuminate\Support\Collection;
 class ServersApiController extends Controller
 {
     private Collection $servers;
+    private Collection $serversSimple;
 
     public function __construct()
     {
         $serversData = Server::all()->where('active', 1);
         $servers = [];
+        $serversSimple = [];
         foreach ($serversData as $serverData) {
             $server = (new \App\Http\Controllers\Business\Servers\Server())
+                ->setType($serverData->type)
                 ->setAddress($serverData->ip)
                 ->setUser($serverData->login)
                 ->setPassword($serverData->password);
+            $serversSimple[] = $server;
 
             foreach ([XuiServerController::class, AmneziaServerController::class] as $controller) {
                 /** @var IServerController $controller */
@@ -37,6 +41,7 @@ class ServersApiController extends Controller
         }
 
         $this->servers = collect($servers);
+        $this->serversSimple = collect($serversSimple);
     }
 
     public function store(Request $request)
@@ -99,6 +104,9 @@ class ServersApiController extends Controller
         /** @var IServerController $server */
         foreach ($this->servers->all() as $server) {
 //            $server->updateUser($user);
+        }
+
+        foreach ($this->serversSimple->all() as $server) {
             ProcessUpdatingUser::dispatch($server, $user);
         }
 
