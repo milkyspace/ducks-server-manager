@@ -22,7 +22,6 @@ cd ducks-server-manager
 chmod u+x install.sh
 ./install.sh
 # answer the installation questions if necessary
-# INSTALL php-pcntl !!! Instruction: https://dev.to/guilherme-lauxen/setting-up-a-development-environment-using-laravel-sail-docker-2fn0#:~:text=sail%20artisan%20migrate-,%D0%A1%D0%BE%D0%B2%D0%B5%D1%82,-%3A%20%D0%A3%D1%81%D1%82%D0%B0%D0%BD%D0%BE%D0%B2%D0%BA%D0%B0%20%D0%BC%D0%BE%D0%B4%D1%83%D0%BB%D0%B5%D0%B9%20%D0%B8
 
 #If you run any Docker command from a regular user, the following error will be displayed in the terminal:
 #Got permission denied while trying to connect to the Docker daemon socket at unix:///var/run/docker.sock: Get "http://%2Fvar%2Frun%2Fdocker.sock/v1.24/containers/json": dial unix /var/run/docker.sock: connect: permission denied
