@@ -65,7 +65,7 @@ class ServersApiController extends Controller
 
         /** @var IServerController $server */
         foreach ($this->servers->all() as $server) {
-            $server->addUser($user);
+//            $server->addUser($user);
         }
 
         foreach ($this->serversSimple->all() as $server) {

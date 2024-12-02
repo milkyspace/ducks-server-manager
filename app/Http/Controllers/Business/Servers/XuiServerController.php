@@ -72,7 +72,7 @@ class XuiServerController implements IServerController
             $update['limitIp'] = $user->getLimitIp();
         }
 
-        if (!empty($user->getExpiryTime()) || $user->getExpiryTime() === 0) {
+        if (!empty($user->getExpiryTime())) {
             $time = $user->getExpiryTime();
             if ($time === 'now') {
                 $time = time();
@@ -84,13 +84,11 @@ class XuiServerController implements IServerController
             $update['enable'] = false;
         } elseif ($user->isEnable() === true) {
             $update['enable'] = true;
-            $update['expiryTime'] = 0;
         }
 
         $update['reset'] = 0;
 
         try {
-            $this->xuiConnect->update(['expiryTime' => 0], ['email' => $user->getId(),]);
             $isUpdate = $this->xuiConnect->update($update, ['email' => $user->getId(),]);
             if ($isUpdate['success'] === true) {
                 return [
