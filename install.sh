@@ -1,4 +1,6 @@
 function install() {
+    apt-get upgrade
+    apt-get update
     apt-get install sudo
 
     sudo apt-get install vim -y
