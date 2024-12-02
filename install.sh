@@ -36,7 +36,7 @@ function install() {
     php artisan cache:clear
     php artisan migrate
     ./vendor/bin/sail up -d
-    php artisan queue:listen --timeout=180
+    php artisan queue:work --timeout=180
 
     clear
     echo "Installed DUCKS SERVERS MANAGER"
