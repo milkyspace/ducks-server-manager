@@ -11,6 +11,8 @@ class ProcessUpdatingUser implements ShouldQueue
 {
     use Queueable;
 
+    public $timeout = 180;
+
     /**
      * Create a new job instance.
      */
@@ -26,11 +28,10 @@ class ProcessUpdatingUser implements ShouldQueue
         try {
             $isUpdate = $this->server->updateUser($this->user);;
             if ($isUpdate !== true) {
-                $this->fail('Не обновился пользователь ' . $this->user->getUserName() . '(' . $this->user->getId() . ')' . ' на сервере ' . $this->server->getServer()->getAddress());
-                $this->release();
+                $this->release(10);
             }
         } catch (\Exception $e) {
-            $this->release();
+            $this->release(10);
         }
     }
 }

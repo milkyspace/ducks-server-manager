@@ -11,6 +11,8 @@ class ProcessAddingUser implements ShouldQueue
 {
     use Queueable;
 
+    public $timeout = 180;
+    
     /**
      * Create a new job instance.
      */
@@ -26,11 +28,10 @@ class ProcessAddingUser implements ShouldQueue
         try {
             $isAdded = $this->server->addUser($this->user);
             if ($isAdded !== true) {
-                $this->fail('Не создался пользователь ' . $this->user->getUserName() . '(' . $this->user->getId() . ')' . ' на сервере ' . $this->server->getServer()->getAddress());
-                $this->release();
+                $this->release(10);
             }
         } catch (\Exception $e) {
-            $this->release();
+            $this->release(10);
         }
     }
 }

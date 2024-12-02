@@ -98,7 +98,7 @@ class ServersApiController extends Controller
 
         /** @var IServerController $server */
         foreach ($this->servers->all() as $server) {
-            $server->updateUser($user);
+//            $server->updateUser($user);
             ProcessUpdatingUser::dispatch($server, $user);
         }
 
