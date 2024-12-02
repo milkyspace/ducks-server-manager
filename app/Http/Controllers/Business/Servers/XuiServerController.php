@@ -82,7 +82,6 @@ class XuiServerController implements IServerController
 
         if ($user->isEnable() === false) {
             $update['enable'] = false;
-            $update['expiryTime'] = time();
         } elseif ($user->isEnable() === true) {
             $update['enable'] = true;
             $update['expiryTime'] = 0;
@@ -91,6 +90,7 @@ class XuiServerController implements IServerController
         $update['reset'] = 0;
 
         try {
+            $this->xuiConnect->update(['expiryTime' => 0], ['email' => $user->getId(),]);
             $isUpdate = $this->xuiConnect->update($update, ['email' => $user->getId(),]);
             if ($isUpdate['success'] === true) {
                 return [
