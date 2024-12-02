@@ -53,6 +53,7 @@ numprocs=8
 redirect_stderr=true
 stdout_logfile=/var/www/ducks-server-manager/logs/worker.log
 stopwaitsecs=3600" >> /etc/supervisor/conf.d/laravel-worker.conf
+    sudo systemctl enable supervisor --now
     sudo supervisorctl reread
     sudo supervisorctl update
     sudo supervisorctl start "laravel-worker:*"
