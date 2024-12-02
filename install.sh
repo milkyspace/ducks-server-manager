@@ -11,8 +11,8 @@ function install() {
     sudo apt install npm -y
     sudo apt-get install sqlite3 -y
 
-    cd storage
-    sqlite3 database.sqlite < schema_db.sql
+    cd database
+    touch database.sqlite
     cd ../
     composer update
     npm install
@@ -34,7 +34,9 @@ function install() {
     php artisan sail:install
     chmod -R guo+w storage
     php artisan cache:clear
+    php artisan migrate
     ./vendor/bin/sail up -d
+    php artisan queue:listen --timeout=180
 
     clear
     echo "Installed DUCKS SERVERS MANAGER"
