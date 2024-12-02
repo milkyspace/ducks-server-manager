@@ -1,4 +1,6 @@
 function install() {
+    apt-get upgrade
+    apt-get update
     apt-get install sudo
 
     sudo apt-get install vim -y
@@ -36,7 +38,27 @@ function install() {
     php artisan cache:clear
     php artisan migrate
     ./vendor/bin/sail up -d
-    php artisan queue:listen --timeout=180
+
+    sudo apt-get install supervisor
+    touch /etc/supervisor/conf.d/laravel-worker.conf
+    mkdir /var/www/ducks-server-manager/logs/
+    touch /var/www/ducks-server-manager/logs/worker.log
+    echo "[program:laravel-worker]
+process_name=%(program_name)s_%(process_num)02d
+command=php /var/www/ducks-server-manager/artisan queue:work --timeout=180
+autostart=true
+autorestart=true
+stopasgroup=true
+killasgroup=true
+;user=forge
+numprocs=8
+redirect_stderr=true
+stdout_logfile=/var/www/ducks-server-manager/logs/worker.log
+stopwaitsecs=3600" >> /etc/supervisor/conf.d/laravel-worker.conf
+    sudo systemctl enable supervisor --now
+    sudo supervisorctl reread
+    sudo supervisorctl update
+    sudo supervisorctl start "laravel-worker:*"
 
     clear
     echo "Installed DUCKS SERVERS MANAGER"

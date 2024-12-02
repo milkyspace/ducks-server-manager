@@ -50,6 +50,11 @@ Set permissions:
 
 Now you can open DSM at http://{$IP}/register to register at DSM
 
+**QUEUE**
+```sh
+php artisan queue:work --timeout=180
+```
+
 
 ## License
 
