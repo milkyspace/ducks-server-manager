@@ -16,7 +16,7 @@ class ProcessUpdatingUser implements ShouldQueue
 
     public $timeout = 180;
 
-    public $tries = 999;
+    public $tries = 5;
 
     /**
      * Create a new job instance.
