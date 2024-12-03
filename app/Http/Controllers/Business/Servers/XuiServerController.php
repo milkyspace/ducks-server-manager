@@ -49,20 +49,34 @@ class XuiServerController implements IServerController
         return $this;
     }
 
-    public function addUser(User $user, ?array $data = []): bool
+    public function addUser(User $user, ?array $data = []): array
     {
-        $response = $this->xuiConnect->fetch(['email' => $user->getId(),]);
-        if($response['success'] !== true){
-            $isAdded = $this->xuiConnect->add($user->getId(), $user->getId(), 0, 0, $this->server->getDefaultProtocol(), $this->server->getDefaultTransmission());
-            if ($isAdded['success'] === true) {
-                ProcessUpdatingUser::dispatch($this->server, $user);
-                return true;
-            } else {
-                return false;
+        try {
+            $response = $this->xuiConnect->fetch(['email' => $user->getId(),]);
+            if ($response['success'] !== true) {
+                $isAdded = $this->xuiConnect->add($user->getId(), $user->getId(), 0, 0, $this->server->getDefaultProtocol(), $this->server->getDefaultTransmission());
+                if ($isAdded['success'] === true) {
+                    ProcessUpdatingUser::dispatch($this->server, $user);
+                    return [
+                        'success' => true,
+                    ];
+                } else {
+                    return [
+                        'success' => false,
+                        'result' => $isAdded,
+                    ];
+                }
             }
+            return [
+                'success' => true,
+            ];
+        } catch (\Exception $e) {
+            return [
+                'success' => false,
+                'result' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ];
         }
-
-        return true;
     }
 
     public function updateUser(User $user): array

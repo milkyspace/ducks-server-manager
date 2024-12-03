@@ -51,7 +51,7 @@ class AmneziaServerController implements IServerController
         return null;
     }
 
-    public function addUser(User $user, ?array $data = []): bool
+    public function addUser(User $user, ?array $data = []): array
     {
         // Создаем конфиг только тогда, когда сменился протокол на Amnezia
         if (empty($user->getType())) {
