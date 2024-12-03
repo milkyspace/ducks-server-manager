@@ -53,7 +53,7 @@ class XuiServerController implements IServerController
         /** @var Server $server */
         $response = $this->xuiConnect->fetch(['email' => $user->getId(),]);
 
-        if ($response['success'] !== true) {
+        if (empty($response) || $response['success'] !== true || empty($response["obj"]["user"])) {
             $isAdded = $this->xuiConnect->add($user->getId(), $user->getId(), 0, 0, $this->server->getDefaultProtocol(), $this->server->getDefaultTransmission());
             if ($isAdded['success'] === true && $this->updateUser($user)) {
                 return true;
