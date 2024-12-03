@@ -7,6 +7,7 @@ use App\Http\Controllers\Business\Servers\User;
 use App\Http\Controllers\Business\Servers\XuiServerController;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
+use Throwable;
 
 class ProcessUpdatingUser implements ShouldQueue
 {
@@ -52,5 +53,13 @@ class ProcessUpdatingUser implements ShouldQueue
     public function backoff(): array
     {
         return [5, 10, 20];
+    }
+
+    /**
+     * Обработать провал задания.
+     */
+    public function failed(?Throwable $exception): void
+    {
+        $this->release(5);
     }
 }
