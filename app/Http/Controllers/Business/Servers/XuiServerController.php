@@ -52,6 +52,7 @@ class XuiServerController implements IServerController
     {
         /** @var Server $server */
         $isAdded = $this->xuiConnect->add($user->getId(), $user->getId(), 0, 0, $this->server->getDefaultProtocol(), $this->server->getDefaultTransmission());
+        dd($isAdded);
         if ($isAdded['success'] === true && $this->updateUser($user)) {
             return true;
         } else {
