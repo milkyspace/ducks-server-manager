@@ -45,7 +45,7 @@ class ProcessUpdatingUser implements ShouldQueue
             }
         } catch (\Exception $e) {
             sleep(5);
-            $this->fail('Exception Не обновился пользователь ' . $this->user->getUserName() . '(' . $this->user->getId() . ' ' . $e->getMessage());
+            $this->fail('Exception Не обновился пользователь ' . $this->user->getUserName() . '(' . $this->user->getId() . ' ' . $e->getMessage() . ' ' . $e->getTraceAsString());
             $this->release(10);
         }
     }
