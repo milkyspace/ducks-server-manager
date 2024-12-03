@@ -37,14 +37,14 @@ class ProcessUpdatingUser implements ShouldQueue
                     $server = new $controller($this->server);
                     $isUpdate = $server->updateUser($this->user);
                     if ($isUpdate['success'] !== true) {
-                        sleep(5);
+                        sleep(1);
                         $this->fail('Не обновился пользователь ' . $this->user->getUserName() . '(' . $this->user->getId() . ') на сервере ' . $server->getServer()->getAddress() . json_encode($isUpdate));
                         $this->release(10);
                     }
                 }
             }
         } catch (\Exception $e) {
-            sleep(5);
+            sleep(1);
             $this->fail('Exception Не обновился пользователь ' . $this->user->getUserName() . '(' . $this->user->getId() . ' ' . $e->getMessage() . ' ' . $e->getTraceAsString());
             $this->release(10);
         }
