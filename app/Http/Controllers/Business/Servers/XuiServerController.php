@@ -98,6 +98,7 @@ class XuiServerController implements IServerController
             $update['enable'] = false;
         } elseif ($user->isEnable() === true) {
             $update['enable'] = true;
+            $update['expiryTime'] = 0;
         }
 
         $update['reset'] = 0;
