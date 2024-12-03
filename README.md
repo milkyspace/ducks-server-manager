@@ -57,7 +57,13 @@ Now you can open DSM at http://{$IP}/register to register at DSM
 
 **QUEUE**
 ```sh
-php artisan queue:work --timeout=180
+php artisan queue:failed
+php artisan queue:retry all
+
+sudo supervisorctl reread
+sudo supervisorctl update
+sudo supervisorctl stop "laravel-worker:*"
+sudo supervisorctl start "laravel-worker:*"
 ```
 
 
