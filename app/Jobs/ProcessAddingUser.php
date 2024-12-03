@@ -36,12 +36,14 @@ class ProcessAddingUser implements ShouldQueue
                     $server = new $controller($this->server);
                     $isAdded = $server->addUser($this->user);
                     if ($isAdded !== true) {
+                        sleep(5);
                         $this->fail('Не добавился пользователь ' . $this->user->getUserName() . '(' . $this->user->getId() . ') на сервере ' . $server->getServer()->getAddress());
                         $this->release(10);
                     }
                 }
             }
         } catch (\Exception $e) {
+            sleep(5);
             $this->fail('Exception Не добавился пользователь ' . $this->user->getUserName() . '(' . $this->user->getId() . ' ' . $e->getMessage());
             $this->release(10);
         }
