@@ -55,7 +55,9 @@ class AmneziaServerController implements IServerController
     {
         // Создаем конфиг только тогда, когда сменился протокол на Amnezia
         if (empty($user->getType())) {
-            return false;
+            return [
+                'success' => false,
+            ];
         }
 
         // Если пользователь уходит с протокола Amnezia, удаляем конфигурацию, чтобы освободить ip
@@ -64,7 +66,10 @@ class AmneziaServerController implements IServerController
             if (!empty($amneziaUserId)) {
                 $this->amneziaConnect->delete("http://{$this->server->getAddress()}/client/$amneziaUserId");
             }
-            return false;
+
+            return [
+                'success' => false,
+            ];
         }
 
         $amneziaUserId = $this->getAmneziaUserId($user);
@@ -72,7 +77,9 @@ class AmneziaServerController implements IServerController
             $this->amneziaConnect->post("http://{$this->server->getAddress()}/client", ['name' => $user->getId(),]);
         }
 
-        return true;
+        return [
+            'success' => true,
+        ];
     }
 
     public function updateUser(User $user): array
@@ -82,7 +89,7 @@ class AmneziaServerController implements IServerController
             if ($user->isEnable() === true) {
                 $this->addUser($user);
             }
-            return [];
+            return ['success' => true,];
         }
 
         if ($user->isEnable() === true) {
@@ -90,7 +97,7 @@ class AmneziaServerController implements IServerController
         } else if ($user->isEnable() === false) {
             $this->amneziaConnect->post("http://{$this->server->getAddress()}/client/{$amneziaUserId}/disable");
         }
-        return [];
+        return ['success' => true,];
     }
 
     public function destroyUser(User $user): void

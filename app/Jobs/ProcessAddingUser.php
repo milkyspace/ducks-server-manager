@@ -54,12 +54,4 @@ class ProcessAddingUser implements ShouldQueue
     {
         return [5, 10, 20];
     }
-
-    /**
-     * Обработать провал задания.
-     */
-    public function failed(?Throwable $exception): void
-    {
-        $this->release(5);
-    }
 }
