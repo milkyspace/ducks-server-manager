@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Business\Servers;
 
 use App\Http\Controllers\Inner\Xui\XuiConnect;
+use App\Jobs\ProcessUpdatingUser;
 
 class XuiServerController implements IServerController
 {
@@ -50,11 +51,11 @@ class XuiServerController implements IServerController
 
     public function addUser(User $user, ?array $data = []): bool
     {
-        /** @var Server $server */
         $response = $this->xuiConnect->fetch(['email' => $user->getId(),]);
         if($response['success'] !== true){
             $isAdded = $this->xuiConnect->add($user->getId(), $user->getId(), 0, 0, $this->server->getDefaultProtocol(), $this->server->getDefaultTransmission());
-            if ($isAdded['success'] === true && $this->updateUser($user)) {
+            if ($isAdded['success'] === true) {
+                ProcessUpdatingUser::dispatch($this->server, $user);
                 return true;
             } else {
                 return false;

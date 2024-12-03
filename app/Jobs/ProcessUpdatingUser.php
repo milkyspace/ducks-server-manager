@@ -2,8 +2,6 @@
 
 namespace App\Jobs;
 
-use App\Http\Controllers\Business\Pages\ServerController;
-use App\Http\Controllers\Business\Servers\AmneziaServerController;
 use App\Http\Controllers\Business\Servers\IServerController;
 use App\Http\Controllers\Business\Servers\User;
 use App\Http\Controllers\Business\Servers\XuiServerController;
