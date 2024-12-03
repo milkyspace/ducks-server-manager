@@ -51,12 +51,17 @@ class XuiServerController implements IServerController
     public function addUser(User $user, ?array $data = []): bool
     {
         /** @var Server $server */
-        $isAdded = $this->xuiConnect->add($user->getId(), $user->getId(), 0, 0, $this->server->getDefaultProtocol(), $this->server->getDefaultTransmission());
-        if ($isAdded['success'] === true && $this->updateUser($user)) {
-            return true;
-        } else {
-            return false;
+        $response = $this->xuiConnect->fetch(['email' => $user->getId(),]);
+        if($response['success'] !== true){
+            $isAdded = $this->xuiConnect->add($user->getId(), $user->getId(), 0, 0, $this->server->getDefaultProtocol(), $this->server->getDefaultTransmission());
+            if ($isAdded['success'] === true && $this->updateUser($user)) {
+                return true;
+            } else {
+                return false;
+            }
         }
+
+        return true;
     }
 
     public function updateUser(User $user): array
