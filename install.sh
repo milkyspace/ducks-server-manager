@@ -1,7 +1,7 @@
 function install() {
     apt-get upgrade
     apt-get update
-    apt-get install sudo
+    apt-get install sudo -y
 
     sudo apt-get install vim -y
     sudo apt-get install php -y
