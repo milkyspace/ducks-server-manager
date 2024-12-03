@@ -17,6 +17,8 @@ And of course DUCKS VPN itself is open source with a public repository on GitHub
 ## Installation
 
 ```sh
+mkdir /var/www
+cd /var/www
 git clone https://github.com/milkyspace/ducks-server-manager.git
 cd ducks-server-manager
 chmod u+x install.sh
