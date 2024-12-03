@@ -51,18 +51,12 @@ class XuiServerController implements IServerController
     public function addUser(User $user, ?array $data = []): bool
     {
         /** @var Server $server */
-        $response = $this->xuiConnect->fetch(['email' => $user->getId(),]);
-
-        if (empty($response) || $response['success'] !== true || empty($response["obj"]["user"])) {
-            $isAdded = $this->xuiConnect->add($user->getId(), $user->getId(), 0, 0, $this->server->getDefaultProtocol(), $this->server->getDefaultTransmission());
-            if ($isAdded['success'] === true && $this->updateUser($user)) {
-                return true;
-            } else {
-                return false;
-            }
+        $isAdded = $this->xuiConnect->add($user->getId(), $user->getId(), 0, 0, $this->server->getDefaultProtocol(), $this->server->getDefaultTransmission());
+        if ($isAdded['success'] === true && $this->updateUser($user)) {
+            return true;
+        } else {
+            return false;
         }
-
-        return true;
     }
 
     public function updateUser(User $user): array
@@ -93,17 +87,20 @@ class XuiServerController implements IServerController
             if ($isUpdate['success'] === true) {
                 return [
                     'success' => true,
+                    'result' => $isUpdate,
+                ];
+            } else {
+                return [
+                    'success' => false,
+                    'result' => $isUpdate,
                 ];
             }
         } catch (\Throwable $th) {
             return [
-                'success' => true,
+                'success' => false,
                 'error' => $th->getMessage(),
             ];
         }
-        return [
-            'success' => false,
-        ];
     }
 
     public function destroyUser(User $user): void
