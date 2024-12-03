@@ -17,6 +17,11 @@ And of course DUCKS VPN itself is open source with a public repository on GitHub
 ## Installation
 
 ```sh
+# DEBIAN 12
+apt-get update
+apt-get install git -y
+mkdir /var/www
+cd /var/www
 git clone https://github.com/milkyspace/ducks-server-manager.git
 cd ducks-server-manager
 chmod u+x install.sh
@@ -52,7 +57,13 @@ Now you can open DSM at http://{$IP}/register to register at DSM
 
 **QUEUE**
 ```sh
-php artisan queue:work --timeout=180
+php artisan queue:failed
+php artisan queue:retry all
+
+sudo supervisorctl reread
+sudo supervisorctl update
+sudo supervisorctl stop "laravel-worker:*"
+sudo supervisorctl start "laravel-worker:*"
 ```
 
 

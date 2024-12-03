@@ -1,7 +1,7 @@
 function install() {
-    apt-get upgrade
-    apt-get update
-    apt-get install sudo
+    apt-get upgrade -y
+    apt-get update -y
+    apt-get install sudo -y
 
     sudo apt-get install vim -y
     sudo apt-get install php -y
@@ -45,13 +45,13 @@ function install() {
     touch /var/www/ducks-server-manager/logs/worker.log
     echo "[program:laravel-worker]
 process_name=%(program_name)s_%(process_num)02d
-command=php /var/www/ducks-server-manager/artisan queue:work --timeout=180
+command=php /var/www/ducks-server-manager/artisan queue:work --timeout=180 --tries=10 --backoff=5
 autostart=true
 autorestart=true
 stopasgroup=true
 killasgroup=true
 ;user=forge
-numprocs=8
+numprocs=1
 redirect_stderr=true
 stdout_logfile=/var/www/ducks-server-manager/logs/worker.log
 stopwaitsecs=3600" >> /etc/supervisor/conf.d/laravel-worker.conf
