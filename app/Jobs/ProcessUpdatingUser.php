@@ -31,7 +31,7 @@ class ProcessUpdatingUser implements ShouldQueue
     public function handle(): void
     {
         try {
-            foreach ([XuiServerController::class, AmneziaServerController::class] as $controller) {
+            foreach ([XuiServerController::class] as $controller) {
                 /** @var IServerController $controller */
                 if ($controller::TYPE === $this->server->getType()) {
                     $server = new $controller($this->server);
