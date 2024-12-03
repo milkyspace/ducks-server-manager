@@ -223,7 +223,7 @@ class XuiConnect
         $this->deleteCookie();
         $hostname = $this->parseAddress['host'] ?? '';
         $port = $this->parseAddress['port'] ?? 443;
-        $check = fsockopen($hostname, $port, $errCode, $errMessage, 5);
+        $check = fsockopen($hostname, $port, $errCode, $errMessage, 30);
 
         if ($check) {
             if (file_exists($this->cookies['FILE']))
