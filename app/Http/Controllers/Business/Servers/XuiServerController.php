@@ -115,6 +115,12 @@ class XuiServerController implements IServerController
                     'success' => true,
                     'result' => $isUpdate,
                 ];
+            } elseif (str_contains($isUpdate['msg'], 'Not results found')) {
+                return [
+                    'success' => false,
+                    'add_user' => true,
+                    'result' => $isUpdate,
+                ];
             } else {
                 return [
                     'success' => false,
