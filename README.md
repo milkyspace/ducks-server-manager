@@ -50,22 +50,24 @@ Set permissions:
 - sudo chmod -R 777 ./database
 - sudo chmod -R 777 ./app/Http/Controllers/Inner/Xui
 
+```sh
+# settings for performing updates on servers
+php artisan queue:failed # show failed tasks
+php artisan queue:retry all # restart failed tasks
+
+nano /etc/supervisor/conf.d/laravel-worker.conf # to change supervisor`s conf
+sudo supervisorctl reread # reread supervisor`s conf
+sudo supervisorctl update # update supervisor !important after code changing (if code is important for task)
+sudo supervisorctl stop "laravel-worker:*" # stop workers
+sudo supervisorctl start "laravel-worker:*" # start workers
+
+crontab -e
+# insert */20 * * * * cd /var/www/ducks-server-manager/ && php artisan queue:retry all >> /dev/null 2>&1
+```
 
 **APP_URL** is url of your app (example ip of the server http://192.168.0.1)
 
 Now you can open DSM at http://{$IP}/register to register at DSM
-
-**QUEUE**
-```sh
-php artisan queue:failed
-php artisan queue:retry all
-
-sudo supervisorctl reread
-sudo supervisorctl update
-sudo supervisorctl stop "laravel-worker:*"
-sudo supervisorctl start "laravel-worker:*"
-```
-
 
 ## License
 
