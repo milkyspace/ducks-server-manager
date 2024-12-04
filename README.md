@@ -28,8 +28,8 @@ chmod u+x install.sh
 ./install.sh
 # answer the installation questions if necessary
 
-#If you run any Docker command from a regular user, the following error will be displayed in the terminal:
-#Got permission denied while trying to connect to the Docker daemon socket at unix:///var/run/docker.sock: Get "http://%2Fvar%2Frun%2Fdocker.sock/v1.24/containers/json": dial unix /var/run/docker.sock: connect: permission denied
+# if you run any Docker command from a regular user, the following error will be displayed in the terminal:
+# got permission denied while trying to connect to the Docker daemon socket at unix:///var/run/docker.sock: Get "http://%2Fvar%2Frun%2Fdocker.sock/v1.24/containers/json": dial unix /var/run/docker.sock: connect: permission denied
 sudo groupadd docker
 sudo usermod -aG docker $USER
 
@@ -39,6 +39,9 @@ Change it .env: Enter your data using the example
 ```sh
 nano .env # or vim .env
 ```
+**APP_URL** is url of your app (example ip of the server http://192.168.0.1)
+**VPN_DOMAIN_FOR_LINKS** is common domain for vpn servers
+**VPN_DOMAIN_FOR_LINKS_{keyType}** is common domain for keytype vpn servers (example tiktok)
 
 Change docker-compose.yml:
 - Delete everything related to volume mysql
@@ -50,22 +53,23 @@ Set permissions:
 - sudo chmod -R 777 ./database
 - sudo chmod -R 777 ./app/Http/Controllers/Inner/Xui
 
-
-**APP_URL** is url of your app (example ip of the server http://192.168.0.1)
-
-Now you can open DSM at http://{$IP}/register to register at DSM
-
-**QUEUE**
 ```sh
-php artisan queue:failed
-php artisan queue:retry all
+# settings for performing updates on servers
+php artisan queue:failed # show failed tasks
+php artisan queue:retry all # restart failed tasks
 
-sudo supervisorctl reread
-sudo supervisorctl update
-sudo supervisorctl stop "laravel-worker:*"
-sudo supervisorctl start "laravel-worker:*"
+nano /etc/supervisor/conf.d/laravel-worker.conf # to change supervisor`s conf
+sudo supervisorctl reread # reread supervisor`s conf
+sudo supervisorctl update # update supervisor !important after code changing (if code is important for task)
+sudo supervisorctl stop "laravel-worker:*" # stop workers
+sudo supervisorctl start "laravel-worker:*" # start workers
+
+crontab -e
+# insert */20 * * * * cd /var/www/ducks-server-manager/ && php artisan queue:retry all >> /dev/null 2>&1
+systemctl enable cron
 ```
 
+Now you can open DSM at http://{$IP}/register to register at DSM
 
 ## License
 
