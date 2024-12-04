@@ -35,7 +35,7 @@ class ProcessUpdatingUser implements ShouldQueue
                 if ($controller::TYPE === $this->server->getType()) {
                     $server = new $controller($this->server);
                     $isUpdate = $server->updateUser($this->user);
-                    if ($isUpdate['add_user'] === true) {
+                    if (array_key_exists('add_user', $isUpdate) && $isUpdate['add_user'] === true) {
                         ProcessAddingUser::dispatch($this->server, $this->user);
                     }
                     if ($isUpdate['success'] !== true) {
