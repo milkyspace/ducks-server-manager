@@ -39,6 +39,9 @@ Change it .env: Enter your data using the example
 ```sh
 nano .env # or vim .env
 ```
+**APP_URL** is url of your app (example ip of the server http://192.168.0.1)
+**VPN_DOMAIN_FOR_LINKS** is common domain for vpn servers
+**VPN_DOMAIN_FOR_LINKS_{keyType}** is common domain for keytype vpn servers (example tiktok)
 
 Change docker-compose.yml:
 - Delete everything related to volume mysql
@@ -64,8 +67,6 @@ sudo supervisorctl start "laravel-worker:*" # start workers
 crontab -e
 # insert */20 * * * * cd /var/www/ducks-server-manager/ && php artisan queue:retry all >> /dev/null 2>&1
 ```
-
-**APP_URL** is url of your app (example ip of the server http://192.168.0.1)
 
 Now you can open DSM at http://{$IP}/register to register at DSM
 
