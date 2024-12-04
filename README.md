@@ -66,6 +66,7 @@ sudo supervisorctl start "laravel-worker:*" # start workers
 
 crontab -e
 # insert */20 * * * * cd /var/www/ducks-server-manager/ && php artisan queue:retry all >> /dev/null 2>&1
+systemctl enable cron
 ```
 
 Now you can open DSM at http://{$IP}/register to register at DSM
