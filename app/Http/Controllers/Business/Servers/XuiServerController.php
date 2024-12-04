@@ -60,7 +60,7 @@ class XuiServerController implements IServerController
                     return [
                         'success' => true,
                     ];
-                } else if (str_contains($response['msg'], 'Duplicate email')) {
+                } else if (str_contains($isAdded['msg'], 'Duplicate email')) {
                     return [
                         'success' => true,
                         'result' => $isAdded,
