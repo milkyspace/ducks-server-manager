@@ -153,11 +153,16 @@ class XuiServerController implements IServerController
         }
 
         $keyType = str_replace(['iPhone', 'Android', 'Windows', 'MacOS[;'], '', $keyType);
-        $response = $this->xuiConnect->fetch(['email' => $user->getId(),], $address, $keyType);
-        if ($response['success'] !== true) {
-            return '';
-        }
-        return $response["obj"]["user"]["url"];
+
+        $link = "vless://{$user->getId()}@{$address}:443?type=tcp&security=reality&pbk=IarU4xicX8qiVO5nqzeHc6MK9A_Vw9YaAtnPHB4DswU&fp=chrome&sni=google.com&sid=409c9524370c&spx=%2F&flow=xtls-rprx-vision#VPNDUCKS{$keyType}";
+
+//        $response = $this->xuiConnect->fetch(['email' => $user->getId(),], $address, $keyType);
+//        if ($response['success'] !== true) {
+//            return '';
+//        }
+//        return $response["obj"]["user"]["url"];
+
+        return $link;
     }
 
     public function getFile(User $user): ?string
