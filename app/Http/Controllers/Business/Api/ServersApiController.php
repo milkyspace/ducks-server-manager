@@ -132,12 +132,8 @@ class ServersApiController extends Controller
         $user = (new User())->setId($id);
         $link = '';
         /** @var IServerController $server */
-        foreach ($this->servers->all() as $server) {
-            $link = $server->getLink($user, $keyType);
-            if (!empty($link)) {
-                break;
-            }
-        }
+        $server = $this->servers->last();
+        $link = $server->getLink($user, $keyType);
 
         return response()->json([
             'data' => [
