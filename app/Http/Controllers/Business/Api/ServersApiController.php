@@ -64,9 +64,9 @@ class ServersApiController extends Controller
             ->setExpiryTime(0);
 
         /** @var IServerController $server */
-        foreach ($this->servers->all() as $server) {
-            $server->addUser($user);
-        }
+//        foreach ($this->servers->all() as $server) {
+//            $server->addUser($user);
+//        }
 
         foreach ($this->serversSimple->all() as $server) {
             ProcessAddingUser::dispatch($server, $user);
