@@ -558,8 +558,8 @@ class XuiConnect
                     'success' => true,
                     'msg' => 'Inbound exists',
                     'obj' => [
-                        'inboundId' => '3',
-                        'inboundPort' => '443',
+                        'inboundId' => 3,
+                        'inboundPort' => 443,
                     ]
                 ];
 
