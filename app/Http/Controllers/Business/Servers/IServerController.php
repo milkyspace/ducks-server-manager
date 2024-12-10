@@ -21,4 +21,6 @@ interface IServerController
     public function getFile(User $user): ?string;
 
     public function getUsersList(): ?array;
+
+    public function getUser(User $user): ?array;
 }

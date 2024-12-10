@@ -130,4 +130,9 @@ class AmneziaServerController implements IServerController
     {
         return [];
     }
+
+    public function getUser(User $user): ?array
+    {
+        return [];
+    }
 }

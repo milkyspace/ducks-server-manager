@@ -18,4 +18,5 @@ Route::delete('vpnservers/{userId}', [ServersApiController::class, 'destroy'])->
 Route::get('/vpnservers/{tg_id}/getLink/{key_type}', [ServersApiController::class, 'getLink'])->middleware('auth:sanctum');
 Route::get('/vpnservers/{tg_id}/getAmneziaFile', [ServersApiController::class, 'getFile'])->middleware('auth:sanctum');
 Route::get('/vpnservers/getUsersList', [ServersApiController::class, 'getUsersList'])->middleware('auth:sanctum');
+Route::get('/vpnservers/{tg_id}/getUser', [ServersApiController::class, 'getUser'])->middleware('auth:sanctum');
 

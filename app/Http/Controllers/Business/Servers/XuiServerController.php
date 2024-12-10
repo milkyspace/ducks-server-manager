@@ -53,28 +53,28 @@ class XuiServerController implements IServerController
     {
         try {
             $response = $this->xuiConnect->fetch(['email' => $user->getId(),]);
-            if ($response['success'] !== true) {
-                $isAdded = $this->xuiConnect->add($user->getId(), $user->getId(), 0, 0, $this->server->getDefaultProtocol(), $this->server->getDefaultTransmission());
-                if ($isAdded['success'] === true) {
-                    ProcessUpdatingUser::dispatch($this->server, $user);
-                    return [
-                        'success' => true,
-                    ];
-                } else if (str_contains($isAdded['msg'], 'Duplicate email')) {
-                    return [
-                        'success' => true,
-                        'result' => $isAdded,
-                    ];
-                } else {
-                    return [
-                        'success' => false,
-                        'result' => $isAdded,
-                    ];
-                }
+            if ($response['success'] === true && $response['msg'] === 'User found successfully') {
+                return [
+                    'success' => true,
+                ];
             }
-            return [
-                'success' => true,
-            ];
+            $isAdded = $this->xuiConnect->add($user->getId(), $user->getId(), 0, 0, $this->server->getDefaultProtocol(), $this->server->getDefaultTransmission());
+            if ($isAdded['success'] === true) {
+                ProcessUpdatingUser::dispatch($this->server, $user);
+                return [
+                    'success' => true,
+                ];
+            } else if (str_contains($isAdded['msg'], 'Duplicate email')) {
+                return [
+                    'success' => true,
+                    'result' => $isAdded,
+                ];
+            } else {
+                return [
+                    'success' => false,
+                    'result' => $isAdded,
+                ];
+            }
         } catch (\Exception $e) {
             return [
                 'success' => false,
@@ -174,5 +174,11 @@ class XuiServerController implements IServerController
     {
         $response = $this->xuiConnect->fetchAll([]);
         return $response['clients'] ?: [];
+    }
+
+    public function getUser(User $user): ?array
+    {
+        $response = $this->xuiConnect->fetch(['email' => $user->getId(),]);
+        return $response ?: [];
     }
 }

@@ -177,4 +177,19 @@ class ServersApiController extends Controller
             'users_by_servers' => $usersByServers,
         ]);
     }
+
+    public function getUser(Request $request, string $id)
+    {
+        $user = (new User())->setId($id);
+
+        $userByServers = [];
+        /** @var IServerController $server */
+        foreach ($this->servers->all() as $server) {
+            $userByServers[$server->getServer()->getAddress()] = $server->getUser($user);
+        }
+
+        return response()->json([
+            'user_by_servers' => $userByServers,
+        ]);
+    }
 }
