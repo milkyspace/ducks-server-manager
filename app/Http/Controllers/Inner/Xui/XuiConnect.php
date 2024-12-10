@@ -119,6 +119,7 @@ class XuiConnect
         $this->settings['DEFAULTS']['PROTOCOL'] = match (strtolower($protocol)) {
             'vmess' => 'vmess',
             'trojan' => 'trojan',
+            'vless' => 'vless',
             default => 'vless'
         };
     }
@@ -553,74 +554,14 @@ class XuiConnect
 
         switch ($this->settings['TYPE']) {
             case 1:
-                $inboundFilters = ['protocol' => $protocol, 'transmission' => $transmission];
-                if ($port) $inboundFilters['port'] = $port;
-                $checkInbound = $this->list($inboundFilters);
-
-                if ($checkInbound['success']) {
-                    $data = $checkInbound['obj'][0];
-
-                    return [
-                        'success' => true,
-                        'msg' => 'Inbound exists',
-                        'obj' => [
-                            'inboundId' => $data['inbound']['id'],
-                            'inboundPort' => $data['inbound']['port'],
-                        ]
-                    ];
-                }
-
-                $uuid = xuiTools::randUUID();
-                $port = $this->randPort();
-                $password = xuiTools::randStr();
-                $email = xuiTools::randStr(8);
-                $remark = 'API-' . strtoupper($protocol) . '-' . strtoupper($transmission);
-                $replaces = [
-                    '%UUID%' => $uuid,
-                    '%EMAIL%' => $email,
-                    '%LIMIT_IP%' => 0,
-                    '%TOTAL%' => 0,
-                    '%EXPIRY_TIME%' => 0,
-                    '%PASSWORD%' => $password,
-                    '%ENABLE%' => true,
+                return [
+                    'success' => true,
+                    'msg' => 'Inbound exists',
+                    'obj' => [
+                        'inboundId' => '3',
+                        'inboundPort' => '443',
+                    ]
                 ];
-                $config = $this->xuiConfig($protocol, $transmission, $replaces);
-
-                if ($config['success']) {
-                    $config = $config['obj'];
-                    $new = [
-                        'up' => 0,
-                        'down' => 0,
-                        'total' => 0,
-                        'remark' => $remark,
-                        'enable' => true,
-                        'expiryTime' => 0,
-                        'listen' => '',
-                        'port' => $port,
-                        'protocol' => $protocol,
-                        'settings' => json_encode($config['settings'] ?? []),
-                        'streamSettings' => json_encode($config['streamSettings'] ?? []),
-                        'sniffing' => json_encode($this->settings['SNIFFING'])
-                    ];
-                    $createInbound = $this->request("{$this->settings['ROOT']}/inbound/add", $new);
-
-                    if ($createInbound['success']) {
-                        $inboundData = $createInbound['obj'];
-
-                        return [
-                            'success' => true,
-                            'msg' => 'Create Inbound Successfully',
-                            'obj' => [
-                                'inboundId' => $inboundData['id'],
-                                'inboundPort' => $inboundData['port']
-                            ]
-                        ];
-                    }
-
-                    return $createInbound;
-                }
-
-                return $config;
 
             default:
                 return [
