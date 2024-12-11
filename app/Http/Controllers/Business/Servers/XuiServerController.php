@@ -110,7 +110,7 @@ class XuiServerController implements IServerController
 
         try {
             $isUpdate = $this->xuiConnect->update($update, ['email' => $user->getId(),]);
-            if ($isUpdate['success'] === true) {
+            if ($isUpdate['success'] === true && $isUpdate['msg'] === 'Update Successfully') {
                 return [
                     'success' => true,
                     'result' => $isUpdate,
