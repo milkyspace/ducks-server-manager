@@ -77,6 +77,29 @@ class ServersApiController extends Controller
 
     public function update(Request $request, $id)
     {
+        if ($id === 0) {
+            $users = $request->input('users');
+
+            foreach ($users as $userId) {
+                $user = (new User())->setId($userId);
+                $user->setType('xui');
+
+                $enable = $request->input('enable');
+                if ($enable === '0') {
+                    $user->setEnable(false);
+                } elseif ($enable === '1') {
+                    $user->setLimitIp(3);
+                    $user->setEnable(true);
+                }
+
+                foreach ($this->serversSimple->all() as $server) {
+                    ProcessUpdatingUser::dispatch($server, $user);
+                }
+
+                return response()->json();
+            }
+        }
+
         if (empty($id)) {
             return response()->json([], 404);
         }
