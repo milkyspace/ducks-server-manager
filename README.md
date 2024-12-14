@@ -71,6 +71,8 @@ systemctl enable cron
 
 Now you can open DSM at http://{$IP}/register to register at DSM
 
+Postman collection for 3x-ui API https://documenter.getpostman.com/view/16802678/2s9YkgD5jm
+
 ## License
 
 MIT License
